@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package psychoscope.v1;
+
+option go_package = "github.com/Bandeira27/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
+
+import "google/protobuf/timestamp.proto";
+import "psychoscope/v1/ipc.proto";
+
+// Canal de controle CLI <-> Core (ctl.sock). Mesmo framing do ipc.proto:
+//   [ uint32 big-endian: N ][ N bytes: RequisicaoControle | RespostaControle ]
+// O cliente envia RequisicaoControle; o Core responde com RespostaControle
+// (uma por requisicao, exceto AssinarAlertas, que gera um stream de respostas
+// com o mesmo id_requisicao_referencia ate a conexao ser encerrada).
+
+message RequisicaoControle {
+  string id_requisicao = 1;
+
+  oneof pedido {
+    PedidoListarModulos listar_modulos = 2;
+    PedidoEnviarComando enviar_comando = 3;
+    PedidoAssinarAlertas assinar_alertas = 4;
+  }
+}
+
+message PedidoListarModulos {}
+
+message PedidoEnviarComando {
+  string id_modulo = 1;
+  ComandoControle.TipoAcao acao = 2;
+  map<string, string> parametros = 3;
+}
+
+message PedidoAssinarAlertas {}
+
+message RespostaControle {
+  string id_requisicao_referencia = 1;
+  bool sucesso = 2;
+  string mensagem_erro = 3;
+
+  oneof resultado {
+    ListaModulos modulos = 4;
+    Alerta alerta = 5;
+  }
+}
+
+enum EstadoModulo {
+  ESTADO_DESCONHECIDO = 0;
+  ESTADO_INICIANDO = 1;
+  ESTADO_CONECTADO = 2;
+  ESTADO_PAUSADO = 3;
+  ESTADO_REINICIANDO = 4;
+  ESTADO_FALHOU = 5;
+  ESTADO_ENCERRADO = 6;
+}
+
+message ModuloInfo {
+  string id_modulo = 1;
+  EstadoModulo estado = 2;
+  uint32 pid = 3;
+  uint32 reinicios = 4;
+  google.protobuf.Timestamp ultimo_contato = 5;
+  StatusModulo ultimo_status = 6;
+  string ultimo_erro = 7;
+}
+
+message ListaModulos {
+  repeated ModuloInfo modulos = 1;
+}
+
+enum Severidade {
+  SEVERIDADE_DESCONHECIDA = 0;
+  SEVERIDADE_BAIXA = 1;
+  SEVERIDADE_MEDIA = 2;
+  SEVERIDADE_ALTA = 3;
+  SEVERIDADE_CRITICA = 4;
+}
+
+message Alerta {
+  string id_alerta = 1;
+  string regra = 2;
+  Severidade severidade = 3;
+  string descricao = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  string id_modulo_origem = 6;
+  map<string, string> contexto = 7;
+}
