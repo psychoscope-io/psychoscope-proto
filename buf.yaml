@@ -1,0 +1,14 @@
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+  except:
+    # O contrato canônico usa nomes de enum em português sem prefixo do tipo
+    # (ex.: RECONFIGURAR, PROTO_TCP) e zeros "DESCONHECIDA/DESCONHECIDO".
+    - ENUM_VALUE_PREFIX
+    - ENUM_ZERO_VALUE_SUFFIX
+breaking:
+  use:
+    - FILE

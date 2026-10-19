@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package psychoscope.v1;
+
+option go_package = "github.com/Bandeira27/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
+
+import "google/protobuf/timestamp.proto";
+
+// Framing (obrigatório em todo stream AF_UNIX):
+//   [ 4 bytes: uint32 big-endian com o tamanho N do payload ] [ N bytes: MensagemIPC serializada ]
+// N deve estar em 1..=1 MiB (1048576). N == 0 ou N > 1 MiB é violação de protocolo
+// e o leitor deve encerrar a conexão sem alocar o payload.
+
+message MensagemIPC {
+  string id_mensagem = 1;
+  google.protobuf.Timestamp timestamp = 2;
+
+  oneof payload {
+    EventoTelemetria telemetria = 3;
+    RespostaComando resposta = 4;
+    StatusModulo status = 5;
+    ComandoControle comando = 6;
+    HelloModulo hello = 7;
+    HelloResposta hello_resposta = 8;
+  }
+}
+
+// Primeira mensagem enviada por um módulo após conectar (módulo -> core).
+message HelloModulo {
+  string id_modulo = 1;
+  uint32 versao_protocolo = 2;
+  string versao_modulo = 3;
+  uint32 pid = 4;
+}
+
+// Resposta do core ao HelloModulo (core -> módulo).
+message HelloResposta {
+  bool aceito = 1;
+  string mensagem_erro = 2;
+  string versao_core = 3;
+  uint32 intervalo_status_seg = 4;
+}
+
+message ComandoControle {
+  string id_comando = 1;
+
+  enum TipoAcao {
+    ACAO_DESCONHECIDA = 0;
+    RECONFIGURAR = 1;
+    PAUSAR = 2;
+    RETOMAR = 3;
+    ENCERRAR = 4;
+  }
+  TipoAcao acao = 2;
+  map<string, string> parametros = 3;
+}
+
+message RespostaComando {
+  string id_comando_referencia = 1;
+  bool sucesso = 2;
+  string mensagem_erro = 3;
+}
+
+message StatusModulo {
+  string id_modulo = 1;
+  uint64 eventos_processados = 2;
+  uint64 bytes_processados = 3;
+  double uso_memoria_mb = 4;
+  double uso_cpu_percent = 5;
+  uint64 pacotes_capturados = 6;
+  uint64 pacotes_descartados = 7;
+}
+
+message EventoTelemetria {
+  string id_modulo = 1;
+
+  oneof dado {
+    EventoFluxoRede rede = 2;
+  }
+}
+
+enum ProtocoloTransporte {
+  PROTO_DESCONHECIDO = 0;
+  PROTO_TCP = 1;
+  PROTO_UDP = 2;
+  PROTO_ICMP = 3;
+}
+
+message EventoFluxoRede {
+  // Endereços em texto: IPv4 (dotted-quad) ou IPv6 (RFC 5952).
+  string ip_origem = 1;
+  uint32 porta_origem = 2;
+  string ip_destino = 3;
+  uint32 porta_destino = 4;
+  ProtocoloTransporte protocolo = 5;
+  uint64 tamanho_bytes = 6;
+
+  message MetadadosDNS {
+    string dominio_consultado = 1;
+    uint32 tipo_registro = 2;
+    repeated string respostas_ip = 3;
+    uint32 codigo_resposta = 4;
+  }
+
+  message MetadadosTLS {
+    string sni_hostname = 1;
+    string versao_tls = 2;
+  }
+
+  oneof metadados_l7 {
+    MetadadosDNS dns = 7;
+    MetadadosTLS tls = 8;
+  }
+
+  // Bitmask de flags TCP: FIN=0x01 SYN=0x02 RST=0x04 PSH=0x08 ACK=0x10 URG=0x20.
+  // Zero para protocolos não-TCP.
+  uint32 flags_tcp = 9;
+  // Tipo e código ICMP; zero para protocolos não-ICMP.
+  uint32 icmp_tipo = 10;
+  uint32 icmp_codigo = 11;
+  // Instante em que o pacote foi capturado pelo sensor.
+  google.protobuf.Timestamp timestamp_captura = 12;
+}

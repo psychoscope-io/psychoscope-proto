@@ -1,0 +1,15 @@
+[package]
+name = "psychoscope-proto"
+version = "0.1.0"
+edition = "2024"
+description = "Contrato IPC canonico do Psychoscope (Protocol Buffers v3, prost)"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+prost = "0.14"
+prost-types = "0.14"
+
+[build-dependencies]
+prost-build = "0.14"
+protoc-bin-vendored = "3"

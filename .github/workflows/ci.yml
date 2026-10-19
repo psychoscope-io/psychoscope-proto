@@ -1,0 +1,22 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  proto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: bufbuild/buf-action@v1
+        with:
+          lint: true
+          breaking: ${{ github.event_name == 'pull_request' }}
+      - uses: actions/setup-go@v5
+        with: { go-version: stable }
+      - run: go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+      - run: buf generate && git diff --exit-code gen/
+      - run: go build ./...
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cd rust && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo build
