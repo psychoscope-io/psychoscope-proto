@@ -17,3 +17,18 @@ Contrato canônico (Protocol Buffers v3) do Psychoscope MODR. Repositório passi
 
 Requer `buf` e `protoc-gen-go` (`go install`). `make lint`, `make gen`, `make check`.
 Regra de evolução: nunca reutilizar números de campo; `buf breaking` roda no CI.
+
+## Publicar e consumir
+
+```
+git tag -a v0.1.0 -m "contrato IPC v0.1.0"      # ja criada localmente
+git push origin main v0.1.0
+```
+
+Consumidores:
+
+- Go: `go get github.com/Bandeira27/psychoscope-proto@v0.1.0`
+- Rust: `psychoscope-proto = { git = "https://github.com/Bandeira27/psychoscope-proto", tag = "v0.1.0" }`
+
+Antes de publicar (ou offline), `source scripts/local-deps.sh` faz Go e Cargo resolverem a dependencia a partir deste checkout local.
+Nunca mova uma tag ja publicada: o Go grava o hash do modulo em `go.sum`; mudanças exigem uma nova versao.
