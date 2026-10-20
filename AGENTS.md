@@ -14,9 +14,10 @@ Contrato canônico (Protocol Buffers v3) do Psychoscope MODR. Repositório passi
 ## Comandos
 
 ```bash
+make hooks                                 # uma vez por clone: ativa commit-msg, pre-commit e pre-push
 make lint                                  # buf lint + buf format --exit-code
 make gen                                   # regenera gen/go
-make check                                 # lint + gen sem diff + fmt/clippy do crate Rust
+make check                                 # lint + gen sem diff + fmt/clippy/cargo deny do crate Rust + shellcheck + actionlint
 make breaking AGAINST='.git#tag=v0.2.0'    # compatibilidade com a última tag
 ```
 
