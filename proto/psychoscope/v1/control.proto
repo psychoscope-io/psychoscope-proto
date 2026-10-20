@@ -20,6 +20,8 @@ message RequisicaoControle {
     PedidoListarModulos listar_modulos = 2;
     PedidoEnviarComando enviar_comando = 3;
     PedidoAssinarAlertas assinar_alertas = 4;
+    PedidoListarAlertas listar_alertas = 5;
+    PedidoMetricas metricas = 6;
   }
 }
 
@@ -36,6 +38,23 @@ message PedidoAssinarAlertas {
   bool incluir_historico = 1;
 }
 
+// Consulta o historico persistido de alertas (mais novo primeiro).
+message PedidoListarAlertas {
+  // Maximo de alertas devolvidos; 0 = padrao do Core (100). O Core limita a 1000.
+  uint32 limite = 1;
+  // So alertas gerados a partir deste instante (ausente = sem limite inferior).
+  google.protobuf.Timestamp desde = 2;
+  // So alertas com severidade >= esta (DESCONHECIDA = sem filtro).
+  Severidade severidade_minima = 3;
+  // So alertas desta regra (vazio = todas).
+  string regra = 4;
+  // So alertas originados deste modulo (vazio = todos).
+  string id_modulo = 5;
+}
+
+// Instantaneo das metricas do Core (motor de deteccao, armazenamento, modulos).
+message PedidoMetricas {}
+
 message RespostaControle {
   string id_requisicao_referencia = 1;
   bool sucesso = 2;
@@ -44,6 +63,8 @@ message RespostaControle {
   oneof resultado {
     ListaModulos modulos = 4;
     Alerta alerta = 5;
+    ListaAlertas alertas = 6;
+    ListaMetricas metricas = 7;
   }
 }
 
@@ -87,4 +108,32 @@ message Alerta {
   google.protobuf.Timestamp timestamp = 5;
   string id_modulo_origem = 6;
   map<string, string> contexto = 7;
+}
+
+message ListaAlertas {
+  repeated Alerta alertas = 1;
+  // Total de alertas que casam com o filtro, ignorando o limite.
+  uint64 total = 2;
+}
+
+enum TipoMetrica {
+  TIPO_METRICA_DESCONHECIDO = 0;
+  // Valor que so cresce (reinicia com o processo).
+  TIPO_METRICA_CONTADOR = 1;
+  // Valor instantaneo que sobe e desce.
+  TIPO_METRICA_MEDIDOR = 2;
+}
+
+// Metrica generica: novas metricas nao exigem mudanca no contrato.
+message Metrica {
+  // Nome no estilo Prometheus, ex.: psychoscope_engine_events_processed_total.
+  string nome = 1;
+  TipoMetrica tipo = 2;
+  string ajuda = 3;
+  map<string, string> rotulos = 4;
+  double valor = 5;
+}
+
+message ListaMetricas {
+  repeated Metrica metricas = 1;
 }
