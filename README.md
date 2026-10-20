@@ -4,9 +4,9 @@ Contrato canônico (Protocol Buffers v3) do Psychoscope MODR. Repositório passi
 
 - `proto/psychoscope/v1/ipc.proto` — contrato IPC core↔módulos (versionado por Git tags).
 - `proto/psychoscope/v1/control.proto` — canal de controle CLI↔core (`ctl.sock`): módulos, comandos, alertas.
-- `gen/go/` — código Go gerado (commitado). `go get github.com/Bandeira27/psychoscope-proto@v0.1.0`,
-  import `github.com/Bandeira27/psychoscope-proto/gen/go/psychoscope/v1`.
-- `rust/` — crate `psychoscope-proto` (prost, protoc vendorizado). `psychoscope-proto = { git = "https://github.com/Bandeira27/psychoscope-proto", tag = "v0.1.0" }`.
+- `gen/go/` — código Go gerado (commitado). `go get github.com/psychoscope-io/psychoscope-proto@v0.1.0`,
+  import `github.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1`.
+- `rust/` — crate `psychoscope-proto` (prost, protoc vendorizado). `psychoscope-proto = { git = "https://github.com/psychoscope-io/psychoscope-proto", tag = "v0.1.0" }`.
 - `testdata/framing_vectors.json` — golden vectors do framing; cada consumidor vendoriza uma cópia.
 
 ## Framing
@@ -27,8 +27,12 @@ git push origin main v0.1.0
 
 Consumidores:
 
-- Go: `go get github.com/Bandeira27/psychoscope-proto@v0.1.0`
-- Rust: `psychoscope-proto = { git = "https://github.com/Bandeira27/psychoscope-proto", tag = "v0.1.0" }`
+- Go: `go get github.com/psychoscope-io/psychoscope-proto@v0.1.0`
+- Rust: `psychoscope-proto = { git = "https://github.com/psychoscope-io/psychoscope-proto", tag = "v0.1.0" }`
 
 Antes de publicar (ou offline), `source scripts/local-deps.sh` faz Go e Cargo resolverem a dependencia a partir deste checkout local.
 Nunca mova uma tag ja publicada: o Go grava o hash do modulo em `go.sum`; mudanças exigem uma nova versao.
+
+## Licença
+
+Apache License 2.0 — veja [LICENSE](LICENSE).

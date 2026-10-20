@@ -1,4 +1,4 @@
-module github.com/Bandeira27/psychoscope-proto
+module github.com/psychoscope-io/psychoscope-proto
 
 go 1.23
 

@@ -788,7 +788,7 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\x10SEVERIDADE_BAIXA\x10\x01\x12\x14\n" +
 	"\x10SEVERIDADE_MEDIA\x10\x02\x12\x13\n" +
 	"\x0fSEVERIDADE_ALTA\x10\x03\x12\x16\n" +
-	"\x12SEVERIDADE_CRITICA\x10\x04BMZKgithub.com/Bandeira27/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
+	"\x12SEVERIDADE_CRITICA\x10\x04BQZOgithub.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
 
 var (
 	file_psychoscope_v1_control_proto_rawDescOnce sync.Once

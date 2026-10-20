@@ -1107,7 +1107,7 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	"\tPROTO_TCP\x10\x01\x12\r\n" +
 	"\tPROTO_UDP\x10\x02\x12\x0e\n" +
 	"\n" +
-	"PROTO_ICMP\x10\x03BMZKgithub.com/Bandeira27/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
+	"PROTO_ICMP\x10\x03BQZOgithub.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
 
 var (
 	file_psychoscope_v1_ipc_proto_rawDescOnce sync.Once
