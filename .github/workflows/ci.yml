@@ -12,7 +12,7 @@ jobs:
           format: true
           pr_comment: false # PRs do Dependabot tem token somente leitura: comentar falharia e mascararia o erro real
           breaking: ${{ github.event_name == 'pull_request' }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with: { go-version: stable }
       - run: go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
       - run: buf generate && git diff --exit-code gen/
