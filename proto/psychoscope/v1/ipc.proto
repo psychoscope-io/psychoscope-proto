@@ -100,6 +100,9 @@ message EventoFluxoRede {
     uint32 tipo_registro = 2;
     repeated string respostas_ip = 3;
     uint32 codigo_resposta = 4;
+    // true para respostas DNS (QR=1); false para consultas. Sem isso um
+    // codigo_resposta 0 seria ambiguo entre consulta e NOERROR.
+    bool eh_resposta = 5;
   }
 
   message MetadadosTLS {

@@ -888,8 +888,11 @@ type EventoFluxoRede_MetadadosDNS struct {
 	TipoRegistro      uint32                 `protobuf:"varint,2,opt,name=tipo_registro,json=tipoRegistro,proto3" json:"tipo_registro,omitempty"`
 	RespostasIp       []string               `protobuf:"bytes,3,rep,name=respostas_ip,json=respostasIp,proto3" json:"respostas_ip,omitempty"`
 	CodigoResposta    uint32                 `protobuf:"varint,4,opt,name=codigo_resposta,json=codigoResposta,proto3" json:"codigo_resposta,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// true para respostas DNS (QR=1); false para consultas. Sem isso um
+	// codigo_resposta 0 seria ambiguo entre consulta e NOERROR.
+	EhResposta    bool `protobuf:"varint,5,opt,name=eh_resposta,json=ehResposta,proto3" json:"eh_resposta,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *EventoFluxoRede_MetadadosDNS) Reset() {
@@ -948,6 +951,13 @@ func (x *EventoFluxoRede_MetadadosDNS) GetCodigoResposta() uint32 {
 		return x.CodigoResposta
 	}
 	return 0
+}
+
+func (x *EventoFluxoRede_MetadadosDNS) GetEhResposta() bool {
+	if x != nil {
+		return x.EhResposta
+	}
+	return false
 }
 
 type EventoFluxoRede_MetadadosTLS struct {
@@ -1063,7 +1073,7 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	"\x10EventoTelemetria\x12\x1b\n" +
 	"\tid_modulo\x18\x01 \x01(\tR\bidModulo\x125\n" +
 	"\x04rede\x18\x02 \x01(\v2\x1f.psychoscope.v1.EventoFluxoRedeH\x00R\x04redeB\x06\n" +
-	"\x04dado\"\xb8\x06\n" +
+	"\x04dado\"\xd9\x06\n" +
 	"\x0fEventoFluxoRede\x12\x1b\n" +
 	"\tip_origem\x18\x01 \x01(\tR\bipOrigem\x12!\n" +
 	"\fporta_origem\x18\x02 \x01(\rR\vportaOrigem\x12\x1d\n" +
@@ -1079,12 +1089,14 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	" \x01(\rR\bicmpTipo\x12\x1f\n" +
 	"\vicmp_codigo\x18\v \x01(\rR\n" +
 	"icmpCodigo\x12G\n" +
-	"\x11timestamp_captura\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\x10timestampCaptura\x1a\xae\x01\n" +
+	"\x11timestamp_captura\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\x10timestampCaptura\x1a\xcf\x01\n" +
 	"\fMetadadosDNS\x12-\n" +
 	"\x12dominio_consultado\x18\x01 \x01(\tR\x11dominioConsultado\x12#\n" +
 	"\rtipo_registro\x18\x02 \x01(\rR\ftipoRegistro\x12!\n" +
 	"\frespostas_ip\x18\x03 \x03(\tR\vrespostasIp\x12'\n" +
-	"\x0fcodigo_resposta\x18\x04 \x01(\rR\x0ecodigoResposta\x1aP\n" +
+	"\x0fcodigo_resposta\x18\x04 \x01(\rR\x0ecodigoResposta\x12\x1f\n" +
+	"\veh_resposta\x18\x05 \x01(\bR\n" +
+	"ehResposta\x1aP\n" +
 	"\fMetadadosTLS\x12!\n" +
 	"\fsni_hostname\x18\x01 \x01(\tR\vsniHostname\x12\x1d\n" +
 	"\n" +
