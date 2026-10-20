@@ -9,6 +9,8 @@ jobs:
       - uses: bufbuild/buf-action@v1
         with:
           lint: true
+          format: true
+          pr_comment: false # PRs do Dependabot tem token somente leitura: comentar falharia e mascararia o erro real
           breaking: ${{ github.event_name == 'pull_request' }}
       - uses: actions/setup-go@v5
         with: { go-version: stable }

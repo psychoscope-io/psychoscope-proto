@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package psychoscope.v1;
 
-option go_package = "github.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
-
 import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
 
 // Framing (obrigatório em todo stream AF_UNIX):
 //   [ 4 bytes: uint32 big-endian com o tamanho N do payload ] [ N bytes: MensagemIPC serializada ]

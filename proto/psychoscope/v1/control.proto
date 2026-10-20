@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package psychoscope.v1;
 
-option go_package = "github.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
-
 import "google/protobuf/timestamp.proto";
 import "psychoscope/v1/ipc.proto";
+
+option go_package = "github.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1";
 
 // Canal de controle CLI <-> Core (ctl.sock). Mesmo framing do ipc.proto:
 //   [ uint32 big-endian: N ][ N bytes: RequisicaoControle | RespostaControle ]

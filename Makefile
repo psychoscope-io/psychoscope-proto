@@ -5,6 +5,7 @@ gen:
 
 lint:
 	buf lint
+	buf format -d --exit-code
 
 # Compara contra a ultima tag publicada (ex.: make breaking AGAINST=.git#tag=v0.1.0)
 AGAINST ?= .git#branch=main
