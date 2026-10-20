@@ -31,7 +31,10 @@ message PedidoEnviarComando {
   map<string, string> parametros = 3;
 }
 
-message PedidoAssinarAlertas {}
+message PedidoAssinarAlertas {
+  // Reenvia os alertas recentes (historico em memoria do Core) antes do stream ao vivo.
+  bool incluir_historico = 1;
+}
 
 message RespostaControle {
   string id_requisicao_referencia = 1;

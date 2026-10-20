@@ -341,9 +341,11 @@ func (x *PedidoEnviarComando) GetParametros() map[string]string {
 }
 
 type PedidoAssinarAlertas struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Reenvia os alertas recentes (historico em memoria do Core) antes do stream ao vivo.
+	IncluirHistorico bool `protobuf:"varint,1,opt,name=incluir_historico,json=incluirHistorico,proto3" json:"incluir_historico,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *PedidoAssinarAlertas) Reset() {
@@ -374,6 +376,13 @@ func (x *PedidoAssinarAlertas) ProtoReflect() protoreflect.Message {
 // Deprecated: Use PedidoAssinarAlertas.ProtoReflect.Descriptor instead.
 func (*PedidoAssinarAlertas) Descriptor() ([]byte, []int) {
 	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PedidoAssinarAlertas) GetIncluirHistorico() bool {
+	if x != nil {
+		return x.IncluirHistorico
+	}
+	return false
 }
 
 type RespostaControle struct {
@@ -730,8 +739,9 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"parametros\x1a=\n" +
 	"\x0fParametrosEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x16\n" +
-	"\x14PedidoAssinarAlertas\"\x84\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"C\n" +
+	"\x14PedidoAssinarAlertas\x12+\n" +
+	"\x11incluir_historico\x18\x01 \x01(\bR\x10incluirHistorico\"\x84\x02\n" +
 	"\x10RespostaControle\x128\n" +
 	"\x18id_requisicao_referencia\x18\x01 \x01(\tR\x16idRequisicaoReferencia\x12\x18\n" +
 	"\asucesso\x18\x02 \x01(\bR\asucesso\x12#\n" +
