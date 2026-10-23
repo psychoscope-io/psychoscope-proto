@@ -22,6 +22,8 @@ message RequisicaoControle {
     PedidoAssinarAlertas assinar_alertas = 4;
     PedidoListarAlertas listar_alertas = 5;
     PedidoMetricas metricas = 6;
+    PedidoLerConfig ler_config = 7;
+    PedidoAplicarConfig aplicar_config = 8;
   }
 }
 
@@ -55,6 +57,21 @@ message PedidoListarAlertas {
 // Instantaneo das metricas do Core (motor de deteccao, armazenamento, modulos).
 message PedidoMetricas {}
 
+// Le a configuracao editavel pelo canal de controle (limiares, excecoes e regras
+// desligadas), com valor atual, padrao e origem de cada campo. Qualquer UID permitido.
+message PedidoLerConfig {}
+
+// Aplica ajustes de configuracao. So o root (UID verificado por SO_PEERCRED) pode escrever;
+// os demais recebem erro e nada e gravado. Os ajustes sao validados em conjunto: ou todos
+// valem, ou nenhum. A resposta traz a configuracao ja atualizada (ListaConfig).
+message PedidoAplicarConfig {
+  // caminho do campo -> valor em JSON, o mesmo formato do arquivo de configuracao
+  // (duracoes como texto: "10s"; listas como arrays JSON).
+  map<string, string> ajustes = 1;
+  // Caminhos a restaurar ao valor base (o do arquivo do administrador, ou o padrao).
+  repeated string restaurar = 2;
+}
+
 message RespostaControle {
   string id_requisicao_referencia = 1;
   bool sucesso = 2;
@@ -65,6 +82,7 @@ message RespostaControle {
     Alerta alerta = 5;
     ListaAlertas alertas = 6;
     ListaMetricas metricas = 7;
+    ListaConfig config = 8;
   }
 }
 
@@ -136,4 +154,46 @@ message Metrica {
 
 message ListaMetricas {
   repeated Metrica metricas = 1;
+}
+
+enum TipoCampo {
+  TIPO_CAMPO_DESCONHECIDO = 0;
+  TIPO_CAMPO_INTEIRO = 1;
+  TIPO_CAMPO_DECIMAL = 2;
+  // Duracao como texto JSON, ex.: "30s", "2m".
+  TIPO_CAMPO_DURACAO = 3;
+  TIPO_CAMPO_LISTA_TEXTO = 4;
+  TIPO_CAMPO_LISTA_INTEIRO = 5;
+}
+
+enum OrigemCampo {
+  ORIGEM_CAMPO_DESCONHECIDA = 0;
+  // Valor padrao do Core.
+  ORIGEM_CAMPO_PADRAO = 1;
+  // Definido no arquivo do administrador.
+  ORIGEM_CAMPO_ARQUIVO = 2;
+  // Definido por um ajuste (PedidoAplicarConfig).
+  ORIGEM_CAMPO_AJUSTE = 3;
+}
+
+// Um campo de configuracao editavel pelo canal de controle.
+message CampoConfig {
+  // Caminho com pontos, o mesmo do arquivo de configuracao: detection.beacon.ignore_ports.
+  string caminho = 1;
+  TipoCampo tipo = 2;
+  // Valores em JSON.
+  string valor_atual = 3;
+  string valor_padrao = 4;
+  OrigemCampo origem = 5;
+  string descricao = 6;
+}
+
+message ListaConfig {
+  repeated CampoConfig campos = 1;
+  // O cliente nao pode escrever (nao e root): a tela deve ficar em modo leitura.
+  bool somente_leitura = 2;
+  // Arquivo onde os ajustes ficam gravados.
+  string arquivo_ajustes = 3;
+  // Avisos nao fatais da ultima aplicacao (ex.: gravado, mas a aplicacao ao vivo expirou).
+  repeated string avisos = 4;
 }

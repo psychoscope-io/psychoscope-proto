@@ -189,6 +189,120 @@ func (TipoMetrica) EnumDescriptor() ([]byte, []int) {
 	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{2}
 }
 
+type TipoCampo int32
+
+const (
+	TipoCampo_TIPO_CAMPO_DESCONHECIDO TipoCampo = 0
+	TipoCampo_TIPO_CAMPO_INTEIRO      TipoCampo = 1
+	TipoCampo_TIPO_CAMPO_DECIMAL      TipoCampo = 2
+	// Duracao como texto JSON, ex.: "30s", "2m".
+	TipoCampo_TIPO_CAMPO_DURACAO       TipoCampo = 3
+	TipoCampo_TIPO_CAMPO_LISTA_TEXTO   TipoCampo = 4
+	TipoCampo_TIPO_CAMPO_LISTA_INTEIRO TipoCampo = 5
+)
+
+// Enum value maps for TipoCampo.
+var (
+	TipoCampo_name = map[int32]string{
+		0: "TIPO_CAMPO_DESCONHECIDO",
+		1: "TIPO_CAMPO_INTEIRO",
+		2: "TIPO_CAMPO_DECIMAL",
+		3: "TIPO_CAMPO_DURACAO",
+		4: "TIPO_CAMPO_LISTA_TEXTO",
+		5: "TIPO_CAMPO_LISTA_INTEIRO",
+	}
+	TipoCampo_value = map[string]int32{
+		"TIPO_CAMPO_DESCONHECIDO":  0,
+		"TIPO_CAMPO_INTEIRO":       1,
+		"TIPO_CAMPO_DECIMAL":       2,
+		"TIPO_CAMPO_DURACAO":       3,
+		"TIPO_CAMPO_LISTA_TEXTO":   4,
+		"TIPO_CAMPO_LISTA_INTEIRO": 5,
+	}
+)
+
+func (x TipoCampo) Enum() *TipoCampo {
+	p := new(TipoCampo)
+	*p = x
+	return p
+}
+
+func (x TipoCampo) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TipoCampo) Descriptor() protoreflect.EnumDescriptor {
+	return file_psychoscope_v1_control_proto_enumTypes[3].Descriptor()
+}
+
+func (TipoCampo) Type() protoreflect.EnumType {
+	return &file_psychoscope_v1_control_proto_enumTypes[3]
+}
+
+func (x TipoCampo) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TipoCampo.Descriptor instead.
+func (TipoCampo) EnumDescriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{3}
+}
+
+type OrigemCampo int32
+
+const (
+	OrigemCampo_ORIGEM_CAMPO_DESCONHECIDA OrigemCampo = 0
+	// Valor padrao do Core.
+	OrigemCampo_ORIGEM_CAMPO_PADRAO OrigemCampo = 1
+	// Definido no arquivo do administrador.
+	OrigemCampo_ORIGEM_CAMPO_ARQUIVO OrigemCampo = 2
+	// Definido por um ajuste (PedidoAplicarConfig).
+	OrigemCampo_ORIGEM_CAMPO_AJUSTE OrigemCampo = 3
+)
+
+// Enum value maps for OrigemCampo.
+var (
+	OrigemCampo_name = map[int32]string{
+		0: "ORIGEM_CAMPO_DESCONHECIDA",
+		1: "ORIGEM_CAMPO_PADRAO",
+		2: "ORIGEM_CAMPO_ARQUIVO",
+		3: "ORIGEM_CAMPO_AJUSTE",
+	}
+	OrigemCampo_value = map[string]int32{
+		"ORIGEM_CAMPO_DESCONHECIDA": 0,
+		"ORIGEM_CAMPO_PADRAO":       1,
+		"ORIGEM_CAMPO_ARQUIVO":      2,
+		"ORIGEM_CAMPO_AJUSTE":       3,
+	}
+)
+
+func (x OrigemCampo) Enum() *OrigemCampo {
+	p := new(OrigemCampo)
+	*p = x
+	return p
+}
+
+func (x OrigemCampo) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (OrigemCampo) Descriptor() protoreflect.EnumDescriptor {
+	return file_psychoscope_v1_control_proto_enumTypes[4].Descriptor()
+}
+
+func (OrigemCampo) Type() protoreflect.EnumType {
+	return &file_psychoscope_v1_control_proto_enumTypes[4]
+}
+
+func (x OrigemCampo) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use OrigemCampo.Descriptor instead.
+func (OrigemCampo) EnumDescriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{4}
+}
+
 type RequisicaoControle struct {
 	state        protoimpl.MessageState `protogen:"open.v1"`
 	IdRequisicao string                 `protobuf:"bytes,1,opt,name=id_requisicao,json=idRequisicao,proto3" json:"id_requisicao,omitempty"`
@@ -199,6 +313,8 @@ type RequisicaoControle struct {
 	//	*RequisicaoControle_AssinarAlertas
 	//	*RequisicaoControle_ListarAlertas
 	//	*RequisicaoControle_Metricas
+	//	*RequisicaoControle_LerConfig
+	//	*RequisicaoControle_AplicarConfig
 	Pedido        isRequisicaoControle_Pedido `protobuf_oneof:"pedido"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -293,6 +409,24 @@ func (x *RequisicaoControle) GetMetricas() *PedidoMetricas {
 	return nil
 }
 
+func (x *RequisicaoControle) GetLerConfig() *PedidoLerConfig {
+	if x != nil {
+		if x, ok := x.Pedido.(*RequisicaoControle_LerConfig); ok {
+			return x.LerConfig
+		}
+	}
+	return nil
+}
+
+func (x *RequisicaoControle) GetAplicarConfig() *PedidoAplicarConfig {
+	if x != nil {
+		if x, ok := x.Pedido.(*RequisicaoControle_AplicarConfig); ok {
+			return x.AplicarConfig
+		}
+	}
+	return nil
+}
+
 type isRequisicaoControle_Pedido interface {
 	isRequisicaoControle_Pedido()
 }
@@ -317,6 +451,14 @@ type RequisicaoControle_Metricas struct {
 	Metricas *PedidoMetricas `protobuf:"bytes,6,opt,name=metricas,proto3,oneof"`
 }
 
+type RequisicaoControle_LerConfig struct {
+	LerConfig *PedidoLerConfig `protobuf:"bytes,7,opt,name=ler_config,json=lerConfig,proto3,oneof"`
+}
+
+type RequisicaoControle_AplicarConfig struct {
+	AplicarConfig *PedidoAplicarConfig `protobuf:"bytes,8,opt,name=aplicar_config,json=aplicarConfig,proto3,oneof"`
+}
+
 func (*RequisicaoControle_ListarModulos) isRequisicaoControle_Pedido() {}
 
 func (*RequisicaoControle_EnviarComando) isRequisicaoControle_Pedido() {}
@@ -326,6 +468,10 @@ func (*RequisicaoControle_AssinarAlertas) isRequisicaoControle_Pedido() {}
 func (*RequisicaoControle_ListarAlertas) isRequisicaoControle_Pedido() {}
 
 func (*RequisicaoControle_Metricas) isRequisicaoControle_Pedido() {}
+
+func (*RequisicaoControle_LerConfig) isRequisicaoControle_Pedido() {}
+
+func (*RequisicaoControle_AplicarConfig) isRequisicaoControle_Pedido() {}
 
 type PedidoListarModulos struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -587,6 +733,102 @@ func (*PedidoMetricas) Descriptor() ([]byte, []int) {
 	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{5}
 }
 
+// Le a configuracao editavel pelo canal de controle (limiares, excecoes e regras
+// desligadas), com valor atual, padrao e origem de cada campo. Qualquer UID permitido.
+type PedidoLerConfig struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PedidoLerConfig) Reset() {
+	*x = PedidoLerConfig{}
+	mi := &file_psychoscope_v1_control_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PedidoLerConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PedidoLerConfig) ProtoMessage() {}
+
+func (x *PedidoLerConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_psychoscope_v1_control_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PedidoLerConfig.ProtoReflect.Descriptor instead.
+func (*PedidoLerConfig) Descriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{6}
+}
+
+// Aplica ajustes de configuracao. So o root (UID verificado por SO_PEERCRED) pode escrever;
+// os demais recebem erro e nada e gravado. Os ajustes sao validados em conjunto: ou todos
+// valem, ou nenhum. A resposta traz a configuracao ja atualizada (ListaConfig).
+type PedidoAplicarConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// caminho do campo -> valor em JSON, o mesmo formato do arquivo de configuracao
+	// (duracoes como texto: "10s"; listas como arrays JSON).
+	Ajustes map[string]string `protobuf:"bytes,1,rep,name=ajustes,proto3" json:"ajustes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// Caminhos a restaurar ao valor base (o do arquivo do administrador, ou o padrao).
+	Restaurar     []string `protobuf:"bytes,2,rep,name=restaurar,proto3" json:"restaurar,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PedidoAplicarConfig) Reset() {
+	*x = PedidoAplicarConfig{}
+	mi := &file_psychoscope_v1_control_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PedidoAplicarConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PedidoAplicarConfig) ProtoMessage() {}
+
+func (x *PedidoAplicarConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_psychoscope_v1_control_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PedidoAplicarConfig.ProtoReflect.Descriptor instead.
+func (*PedidoAplicarConfig) Descriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *PedidoAplicarConfig) GetAjustes() map[string]string {
+	if x != nil {
+		return x.Ajustes
+	}
+	return nil
+}
+
+func (x *PedidoAplicarConfig) GetRestaurar() []string {
+	if x != nil {
+		return x.Restaurar
+	}
+	return nil
+}
+
 type RespostaControle struct {
 	state                  protoimpl.MessageState `protogen:"open.v1"`
 	IdRequisicaoReferencia string                 `protobuf:"bytes,1,opt,name=id_requisicao_referencia,json=idRequisicaoReferencia,proto3" json:"id_requisicao_referencia,omitempty"`
@@ -598,6 +840,7 @@ type RespostaControle struct {
 	//	*RespostaControle_Alerta
 	//	*RespostaControle_Alertas
 	//	*RespostaControle_Metricas
+	//	*RespostaControle_Config
 	Resultado     isRespostaControle_Resultado `protobuf_oneof:"resultado"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -605,7 +848,7 @@ type RespostaControle struct {
 
 func (x *RespostaControle) Reset() {
 	*x = RespostaControle{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[6]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -617,7 +860,7 @@ func (x *RespostaControle) String() string {
 func (*RespostaControle) ProtoMessage() {}
 
 func (x *RespostaControle) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[6]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -630,7 +873,7 @@ func (x *RespostaControle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespostaControle.ProtoReflect.Descriptor instead.
 func (*RespostaControle) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{6}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *RespostaControle) GetIdRequisicaoReferencia() string {
@@ -697,6 +940,15 @@ func (x *RespostaControle) GetMetricas() *ListaMetricas {
 	return nil
 }
 
+func (x *RespostaControle) GetConfig() *ListaConfig {
+	if x != nil {
+		if x, ok := x.Resultado.(*RespostaControle_Config); ok {
+			return x.Config
+		}
+	}
+	return nil
+}
+
 type isRespostaControle_Resultado interface {
 	isRespostaControle_Resultado()
 }
@@ -717,6 +969,10 @@ type RespostaControle_Metricas struct {
 	Metricas *ListaMetricas `protobuf:"bytes,7,opt,name=metricas,proto3,oneof"`
 }
 
+type RespostaControle_Config struct {
+	Config *ListaConfig `protobuf:"bytes,8,opt,name=config,proto3,oneof"`
+}
+
 func (*RespostaControle_Modulos) isRespostaControle_Resultado() {}
 
 func (*RespostaControle_Alerta) isRespostaControle_Resultado() {}
@@ -724,6 +980,8 @@ func (*RespostaControle_Alerta) isRespostaControle_Resultado() {}
 func (*RespostaControle_Alertas) isRespostaControle_Resultado() {}
 
 func (*RespostaControle_Metricas) isRespostaControle_Resultado() {}
+
+func (*RespostaControle_Config) isRespostaControle_Resultado() {}
 
 type ModuloInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -740,7 +998,7 @@ type ModuloInfo struct {
 
 func (x *ModuloInfo) Reset() {
 	*x = ModuloInfo{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[7]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -752,7 +1010,7 @@ func (x *ModuloInfo) String() string {
 func (*ModuloInfo) ProtoMessage() {}
 
 func (x *ModuloInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[7]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -765,7 +1023,7 @@ func (x *ModuloInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ModuloInfo.ProtoReflect.Descriptor instead.
 func (*ModuloInfo) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{7}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ModuloInfo) GetIdModulo() string {
@@ -826,7 +1084,7 @@ type ListaModulos struct {
 
 func (x *ListaModulos) Reset() {
 	*x = ListaModulos{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[8]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -838,7 +1096,7 @@ func (x *ListaModulos) String() string {
 func (*ListaModulos) ProtoMessage() {}
 
 func (x *ListaModulos) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[8]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -851,7 +1109,7 @@ func (x *ListaModulos) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListaModulos.ProtoReflect.Descriptor instead.
 func (*ListaModulos) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{8}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListaModulos) GetModulos() []*ModuloInfo {
@@ -876,7 +1134,7 @@ type Alerta struct {
 
 func (x *Alerta) Reset() {
 	*x = Alerta{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[9]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -888,7 +1146,7 @@ func (x *Alerta) String() string {
 func (*Alerta) ProtoMessage() {}
 
 func (x *Alerta) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[9]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -901,7 +1159,7 @@ func (x *Alerta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Alerta.ProtoReflect.Descriptor instead.
 func (*Alerta) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{9}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Alerta) GetIdAlerta() string {
@@ -964,7 +1222,7 @@ type ListaAlertas struct {
 
 func (x *ListaAlertas) Reset() {
 	*x = ListaAlertas{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -976,7 +1234,7 @@ func (x *ListaAlertas) String() string {
 func (*ListaAlertas) ProtoMessage() {}
 
 func (x *ListaAlertas) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -989,7 +1247,7 @@ func (x *ListaAlertas) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListaAlertas.ProtoReflect.Descriptor instead.
 func (*ListaAlertas) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{10}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListaAlertas) GetAlertas() []*Alerta {
@@ -1021,7 +1279,7 @@ type Metrica struct {
 
 func (x *Metrica) Reset() {
 	*x = Metrica{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[11]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1033,7 +1291,7 @@ func (x *Metrica) String() string {
 func (*Metrica) ProtoMessage() {}
 
 func (x *Metrica) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[11]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1046,7 +1304,7 @@ func (x *Metrica) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Metrica.ProtoReflect.Descriptor instead.
 func (*Metrica) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{11}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Metrica) GetNome() string {
@@ -1093,7 +1351,7 @@ type ListaMetricas struct {
 
 func (x *ListaMetricas) Reset() {
 	*x = ListaMetricas{}
-	mi := &file_psychoscope_v1_control_proto_msgTypes[12]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1105,7 +1363,7 @@ func (x *ListaMetricas) String() string {
 func (*ListaMetricas) ProtoMessage() {}
 
 func (x *ListaMetricas) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_control_proto_msgTypes[12]
+	mi := &file_psychoscope_v1_control_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1118,7 +1376,7 @@ func (x *ListaMetricas) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListaMetricas.ProtoReflect.Descriptor instead.
 func (*ListaMetricas) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{12}
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ListaMetricas) GetMetricas() []*Metrica {
@@ -1128,18 +1386,179 @@ func (x *ListaMetricas) GetMetricas() []*Metrica {
 	return nil
 }
 
+// Um campo de configuracao editavel pelo canal de controle.
+type CampoConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Caminho com pontos, o mesmo do arquivo de configuracao: detection.beacon.ignore_ports.
+	Caminho string    `protobuf:"bytes,1,opt,name=caminho,proto3" json:"caminho,omitempty"`
+	Tipo    TipoCampo `protobuf:"varint,2,opt,name=tipo,proto3,enum=psychoscope.v1.TipoCampo" json:"tipo,omitempty"`
+	// Valores em JSON.
+	ValorAtual    string      `protobuf:"bytes,3,opt,name=valor_atual,json=valorAtual,proto3" json:"valor_atual,omitempty"`
+	ValorPadrao   string      `protobuf:"bytes,4,opt,name=valor_padrao,json=valorPadrao,proto3" json:"valor_padrao,omitempty"`
+	Origem        OrigemCampo `protobuf:"varint,5,opt,name=origem,proto3,enum=psychoscope.v1.OrigemCampo" json:"origem,omitempty"`
+	Descricao     string      `protobuf:"bytes,6,opt,name=descricao,proto3" json:"descricao,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CampoConfig) Reset() {
+	*x = CampoConfig{}
+	mi := &file_psychoscope_v1_control_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CampoConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CampoConfig) ProtoMessage() {}
+
+func (x *CampoConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_psychoscope_v1_control_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CampoConfig.ProtoReflect.Descriptor instead.
+func (*CampoConfig) Descriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CampoConfig) GetCaminho() string {
+	if x != nil {
+		return x.Caminho
+	}
+	return ""
+}
+
+func (x *CampoConfig) GetTipo() TipoCampo {
+	if x != nil {
+		return x.Tipo
+	}
+	return TipoCampo_TIPO_CAMPO_DESCONHECIDO
+}
+
+func (x *CampoConfig) GetValorAtual() string {
+	if x != nil {
+		return x.ValorAtual
+	}
+	return ""
+}
+
+func (x *CampoConfig) GetValorPadrao() string {
+	if x != nil {
+		return x.ValorPadrao
+	}
+	return ""
+}
+
+func (x *CampoConfig) GetOrigem() OrigemCampo {
+	if x != nil {
+		return x.Origem
+	}
+	return OrigemCampo_ORIGEM_CAMPO_DESCONHECIDA
+}
+
+func (x *CampoConfig) GetDescricao() string {
+	if x != nil {
+		return x.Descricao
+	}
+	return ""
+}
+
+type ListaConfig struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	Campos []*CampoConfig         `protobuf:"bytes,1,rep,name=campos,proto3" json:"campos,omitempty"`
+	// O cliente nao pode escrever (nao e root): a tela deve ficar em modo leitura.
+	SomenteLeitura bool `protobuf:"varint,2,opt,name=somente_leitura,json=somenteLeitura,proto3" json:"somente_leitura,omitempty"`
+	// Arquivo onde os ajustes ficam gravados.
+	ArquivoAjustes string `protobuf:"bytes,3,opt,name=arquivo_ajustes,json=arquivoAjustes,proto3" json:"arquivo_ajustes,omitempty"`
+	// Avisos nao fatais da ultima aplicacao (ex.: gravado, mas a aplicacao ao vivo expirou).
+	Avisos        []string `protobuf:"bytes,4,rep,name=avisos,proto3" json:"avisos,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListaConfig) Reset() {
+	*x = ListaConfig{}
+	mi := &file_psychoscope_v1_control_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListaConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListaConfig) ProtoMessage() {}
+
+func (x *ListaConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_psychoscope_v1_control_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListaConfig.ProtoReflect.Descriptor instead.
+func (*ListaConfig) Descriptor() ([]byte, []int) {
+	return file_psychoscope_v1_control_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *ListaConfig) GetCampos() []*CampoConfig {
+	if x != nil {
+		return x.Campos
+	}
+	return nil
+}
+
+func (x *ListaConfig) GetSomenteLeitura() bool {
+	if x != nil {
+		return x.SomenteLeitura
+	}
+	return false
+}
+
+func (x *ListaConfig) GetArquivoAjustes() string {
+	if x != nil {
+		return x.ArquivoAjustes
+	}
+	return ""
+}
+
+func (x *ListaConfig) GetAvisos() []string {
+	if x != nil {
+		return x.Avisos
+	}
+	return nil
+}
+
 var File_psychoscope_v1_control_proto protoreflect.FileDescriptor
 
 const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\n" +
-	"\x1cpsychoscope/v1/control.proto\x12\x0epsychoscope.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18psychoscope/v1/ipc.proto\"\xbc\x03\n" +
+	"\x1cpsychoscope/v1/control.proto\x12\x0epsychoscope.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18psychoscope/v1/ipc.proto\"\xcc\x04\n" +
 	"\x12RequisicaoControle\x12#\n" +
 	"\rid_requisicao\x18\x01 \x01(\tR\fidRequisicao\x12L\n" +
 	"\x0elistar_modulos\x18\x02 \x01(\v2#.psychoscope.v1.PedidoListarModulosH\x00R\rlistarModulos\x12L\n" +
 	"\x0eenviar_comando\x18\x03 \x01(\v2#.psychoscope.v1.PedidoEnviarComandoH\x00R\renviarComando\x12O\n" +
 	"\x0fassinar_alertas\x18\x04 \x01(\v2$.psychoscope.v1.PedidoAssinarAlertasH\x00R\x0eassinarAlertas\x12L\n" +
 	"\x0elistar_alertas\x18\x05 \x01(\v2#.psychoscope.v1.PedidoListarAlertasH\x00R\rlistarAlertas\x12<\n" +
-	"\bmetricas\x18\x06 \x01(\v2\x1e.psychoscope.v1.PedidoMetricasH\x00R\bmetricasB\b\n" +
+	"\bmetricas\x18\x06 \x01(\v2\x1e.psychoscope.v1.PedidoMetricasH\x00R\bmetricas\x12@\n" +
+	"\n" +
+	"ler_config\x18\a \x01(\v2\x1f.psychoscope.v1.PedidoLerConfigH\x00R\tlerConfig\x12L\n" +
+	"\x0eaplicar_config\x18\b \x01(\v2#.psychoscope.v1.PedidoAplicarConfigH\x00R\raplicarConfigB\b\n" +
 	"\x06pedido\"\x15\n" +
 	"\x13PedidoListarModulos\"\x84\x02\n" +
 	"\x13PedidoEnviarComando\x12\x1b\n" +
@@ -1159,7 +1578,14 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\x11severidade_minima\x18\x03 \x01(\x0e2\x1a.psychoscope.v1.SeveridadeR\x10severidadeMinima\x12\x14\n" +
 	"\x05regra\x18\x04 \x01(\tR\x05regra\x12\x1b\n" +
 	"\tid_modulo\x18\x05 \x01(\tR\bidModulo\"\x10\n" +
-	"\x0ePedidoMetricas\"\xfb\x02\n" +
+	"\x0ePedidoMetricas\"\x11\n" +
+	"\x0fPedidoLerConfig\"\xbb\x01\n" +
+	"\x13PedidoAplicarConfig\x12J\n" +
+	"\aajustes\x18\x01 \x03(\v20.psychoscope.v1.PedidoAplicarConfig.AjustesEntryR\aajustes\x12\x1c\n" +
+	"\trestaurar\x18\x02 \x03(\tR\trestaurar\x1a:\n" +
+	"\fAjustesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xb2\x03\n" +
 	"\x10RespostaControle\x128\n" +
 	"\x18id_requisicao_referencia\x18\x01 \x01(\tR\x16idRequisicaoReferencia\x12\x18\n" +
 	"\asucesso\x18\x02 \x01(\bR\asucesso\x12#\n" +
@@ -1167,7 +1593,8 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\amodulos\x18\x04 \x01(\v2\x1c.psychoscope.v1.ListaModulosH\x00R\amodulos\x120\n" +
 	"\x06alerta\x18\x05 \x01(\v2\x16.psychoscope.v1.AlertaH\x00R\x06alerta\x128\n" +
 	"\aalertas\x18\x06 \x01(\v2\x1c.psychoscope.v1.ListaAlertasH\x00R\aalertas\x12;\n" +
-	"\bmetricas\x18\a \x01(\v2\x1d.psychoscope.v1.ListaMetricasH\x00R\bmetricasB\v\n" +
+	"\bmetricas\x18\a \x01(\v2\x1d.psychoscope.v1.ListaMetricasH\x00R\bmetricas\x125\n" +
+	"\x06config\x18\b \x01(\v2\x1b.psychoscope.v1.ListaConfigH\x00R\x06configB\v\n" +
 	"\tresultado\"\xb6\x02\n" +
 	"\n" +
 	"ModuloInfo\x12\x1b\n" +
@@ -1207,7 +1634,20 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"D\n" +
 	"\rListaMetricas\x123\n" +
-	"\bmetricas\x18\x01 \x03(\v2\x17.psychoscope.v1.MetricaR\bmetricas*\xa8\x01\n" +
+	"\bmetricas\x18\x01 \x03(\v2\x17.psychoscope.v1.MetricaR\bmetricas\"\xed\x01\n" +
+	"\vCampoConfig\x12\x18\n" +
+	"\acaminho\x18\x01 \x01(\tR\acaminho\x12-\n" +
+	"\x04tipo\x18\x02 \x01(\x0e2\x19.psychoscope.v1.TipoCampoR\x04tipo\x12\x1f\n" +
+	"\vvalor_atual\x18\x03 \x01(\tR\n" +
+	"valorAtual\x12!\n" +
+	"\fvalor_padrao\x18\x04 \x01(\tR\vvalorPadrao\x123\n" +
+	"\x06origem\x18\x05 \x01(\x0e2\x1b.psychoscope.v1.OrigemCampoR\x06origem\x12\x1c\n" +
+	"\tdescricao\x18\x06 \x01(\tR\tdescricao\"\xac\x01\n" +
+	"\vListaConfig\x123\n" +
+	"\x06campos\x18\x01 \x03(\v2\x1b.psychoscope.v1.CampoConfigR\x06campos\x12'\n" +
+	"\x0fsomente_leitura\x18\x02 \x01(\bR\x0esomenteLeitura\x12'\n" +
+	"\x0farquivo_ajustes\x18\x03 \x01(\tR\x0earquivoAjustes\x12\x16\n" +
+	"\x06avisos\x18\x04 \x03(\tR\x06avisos*\xa8\x01\n" +
 	"\fEstadoModulo\x12\x17\n" +
 	"\x13ESTADO_DESCONHECIDO\x10\x00\x12\x14\n" +
 	"\x10ESTADO_INICIANDO\x10\x01\x12\x14\n" +
@@ -1226,7 +1666,19 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\vTipoMetrica\x12\x1d\n" +
 	"\x19TIPO_METRICA_DESCONHECIDO\x10\x00\x12\x19\n" +
 	"\x15TIPO_METRICA_CONTADOR\x10\x01\x12\x18\n" +
-	"\x14TIPO_METRICA_MEDIDOR\x10\x02BQZOgithub.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
+	"\x14TIPO_METRICA_MEDIDOR\x10\x02*\xaa\x01\n" +
+	"\tTipoCampo\x12\x1b\n" +
+	"\x17TIPO_CAMPO_DESCONHECIDO\x10\x00\x12\x16\n" +
+	"\x12TIPO_CAMPO_INTEIRO\x10\x01\x12\x16\n" +
+	"\x12TIPO_CAMPO_DECIMAL\x10\x02\x12\x16\n" +
+	"\x12TIPO_CAMPO_DURACAO\x10\x03\x12\x1a\n" +
+	"\x16TIPO_CAMPO_LISTA_TEXTO\x10\x04\x12\x1c\n" +
+	"\x18TIPO_CAMPO_LISTA_INTEIRO\x10\x05*x\n" +
+	"\vOrigemCampo\x12\x1d\n" +
+	"\x19ORIGEM_CAMPO_DESCONHECIDA\x10\x00\x12\x17\n" +
+	"\x13ORIGEM_CAMPO_PADRAO\x10\x01\x12\x18\n" +
+	"\x14ORIGEM_CAMPO_ARQUIVO\x10\x02\x12\x17\n" +
+	"\x13ORIGEM_CAMPO_AJUSTE\x10\x03BQZOgithub.com/psychoscope-io/psychoscope-proto/gen/go/psychoscope/v1;psychoscopev1b\x06proto3"
 
 var (
 	file_psychoscope_v1_control_proto_rawDescOnce sync.Once
@@ -1240,62 +1692,76 @@ func file_psychoscope_v1_control_proto_rawDescGZIP() []byte {
 	return file_psychoscope_v1_control_proto_rawDescData
 }
 
-var file_psychoscope_v1_control_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_psychoscope_v1_control_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_psychoscope_v1_control_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
+var file_psychoscope_v1_control_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_psychoscope_v1_control_proto_goTypes = []any{
 	(EstadoModulo)(0),             // 0: psychoscope.v1.EstadoModulo
 	(Severidade)(0),               // 1: psychoscope.v1.Severidade
 	(TipoMetrica)(0),              // 2: psychoscope.v1.TipoMetrica
-	(*RequisicaoControle)(nil),    // 3: psychoscope.v1.RequisicaoControle
-	(*PedidoListarModulos)(nil),   // 4: psychoscope.v1.PedidoListarModulos
-	(*PedidoEnviarComando)(nil),   // 5: psychoscope.v1.PedidoEnviarComando
-	(*PedidoAssinarAlertas)(nil),  // 6: psychoscope.v1.PedidoAssinarAlertas
-	(*PedidoListarAlertas)(nil),   // 7: psychoscope.v1.PedidoListarAlertas
-	(*PedidoMetricas)(nil),        // 8: psychoscope.v1.PedidoMetricas
-	(*RespostaControle)(nil),      // 9: psychoscope.v1.RespostaControle
-	(*ModuloInfo)(nil),            // 10: psychoscope.v1.ModuloInfo
-	(*ListaModulos)(nil),          // 11: psychoscope.v1.ListaModulos
-	(*Alerta)(nil),                // 12: psychoscope.v1.Alerta
-	(*ListaAlertas)(nil),          // 13: psychoscope.v1.ListaAlertas
-	(*Metrica)(nil),               // 14: psychoscope.v1.Metrica
-	(*ListaMetricas)(nil),         // 15: psychoscope.v1.ListaMetricas
-	nil,                           // 16: psychoscope.v1.PedidoEnviarComando.ParametrosEntry
-	nil,                           // 17: psychoscope.v1.Alerta.ContextoEntry
-	nil,                           // 18: psychoscope.v1.Metrica.RotulosEntry
-	(ComandoControle_TipoAcao)(0), // 19: psychoscope.v1.ComandoControle.TipoAcao
-	(*timestamppb.Timestamp)(nil), // 20: google.protobuf.Timestamp
-	(*StatusModulo)(nil),          // 21: psychoscope.v1.StatusModulo
+	(TipoCampo)(0),                // 3: psychoscope.v1.TipoCampo
+	(OrigemCampo)(0),              // 4: psychoscope.v1.OrigemCampo
+	(*RequisicaoControle)(nil),    // 5: psychoscope.v1.RequisicaoControle
+	(*PedidoListarModulos)(nil),   // 6: psychoscope.v1.PedidoListarModulos
+	(*PedidoEnviarComando)(nil),   // 7: psychoscope.v1.PedidoEnviarComando
+	(*PedidoAssinarAlertas)(nil),  // 8: psychoscope.v1.PedidoAssinarAlertas
+	(*PedidoListarAlertas)(nil),   // 9: psychoscope.v1.PedidoListarAlertas
+	(*PedidoMetricas)(nil),        // 10: psychoscope.v1.PedidoMetricas
+	(*PedidoLerConfig)(nil),       // 11: psychoscope.v1.PedidoLerConfig
+	(*PedidoAplicarConfig)(nil),   // 12: psychoscope.v1.PedidoAplicarConfig
+	(*RespostaControle)(nil),      // 13: psychoscope.v1.RespostaControle
+	(*ModuloInfo)(nil),            // 14: psychoscope.v1.ModuloInfo
+	(*ListaModulos)(nil),          // 15: psychoscope.v1.ListaModulos
+	(*Alerta)(nil),                // 16: psychoscope.v1.Alerta
+	(*ListaAlertas)(nil),          // 17: psychoscope.v1.ListaAlertas
+	(*Metrica)(nil),               // 18: psychoscope.v1.Metrica
+	(*ListaMetricas)(nil),         // 19: psychoscope.v1.ListaMetricas
+	(*CampoConfig)(nil),           // 20: psychoscope.v1.CampoConfig
+	(*ListaConfig)(nil),           // 21: psychoscope.v1.ListaConfig
+	nil,                           // 22: psychoscope.v1.PedidoEnviarComando.ParametrosEntry
+	nil,                           // 23: psychoscope.v1.PedidoAplicarConfig.AjustesEntry
+	nil,                           // 24: psychoscope.v1.Alerta.ContextoEntry
+	nil,                           // 25: psychoscope.v1.Metrica.RotulosEntry
+	(ComandoControle_TipoAcao)(0), // 26: psychoscope.v1.ComandoControle.TipoAcao
+	(*timestamppb.Timestamp)(nil), // 27: google.protobuf.Timestamp
+	(*StatusModulo)(nil),          // 28: psychoscope.v1.StatusModulo
 }
 var file_psychoscope_v1_control_proto_depIdxs = []int32{
-	4,  // 0: psychoscope.v1.RequisicaoControle.listar_modulos:type_name -> psychoscope.v1.PedidoListarModulos
-	5,  // 1: psychoscope.v1.RequisicaoControle.enviar_comando:type_name -> psychoscope.v1.PedidoEnviarComando
-	6,  // 2: psychoscope.v1.RequisicaoControle.assinar_alertas:type_name -> psychoscope.v1.PedidoAssinarAlertas
-	7,  // 3: psychoscope.v1.RequisicaoControle.listar_alertas:type_name -> psychoscope.v1.PedidoListarAlertas
-	8,  // 4: psychoscope.v1.RequisicaoControle.metricas:type_name -> psychoscope.v1.PedidoMetricas
-	19, // 5: psychoscope.v1.PedidoEnviarComando.acao:type_name -> psychoscope.v1.ComandoControle.TipoAcao
-	16, // 6: psychoscope.v1.PedidoEnviarComando.parametros:type_name -> psychoscope.v1.PedidoEnviarComando.ParametrosEntry
-	20, // 7: psychoscope.v1.PedidoListarAlertas.desde:type_name -> google.protobuf.Timestamp
-	1,  // 8: psychoscope.v1.PedidoListarAlertas.severidade_minima:type_name -> psychoscope.v1.Severidade
-	11, // 9: psychoscope.v1.RespostaControle.modulos:type_name -> psychoscope.v1.ListaModulos
-	12, // 10: psychoscope.v1.RespostaControle.alerta:type_name -> psychoscope.v1.Alerta
-	13, // 11: psychoscope.v1.RespostaControle.alertas:type_name -> psychoscope.v1.ListaAlertas
-	15, // 12: psychoscope.v1.RespostaControle.metricas:type_name -> psychoscope.v1.ListaMetricas
-	0,  // 13: psychoscope.v1.ModuloInfo.estado:type_name -> psychoscope.v1.EstadoModulo
-	20, // 14: psychoscope.v1.ModuloInfo.ultimo_contato:type_name -> google.protobuf.Timestamp
-	21, // 15: psychoscope.v1.ModuloInfo.ultimo_status:type_name -> psychoscope.v1.StatusModulo
-	10, // 16: psychoscope.v1.ListaModulos.modulos:type_name -> psychoscope.v1.ModuloInfo
-	1,  // 17: psychoscope.v1.Alerta.severidade:type_name -> psychoscope.v1.Severidade
-	20, // 18: psychoscope.v1.Alerta.timestamp:type_name -> google.protobuf.Timestamp
-	17, // 19: psychoscope.v1.Alerta.contexto:type_name -> psychoscope.v1.Alerta.ContextoEntry
-	12, // 20: psychoscope.v1.ListaAlertas.alertas:type_name -> psychoscope.v1.Alerta
-	2,  // 21: psychoscope.v1.Metrica.tipo:type_name -> psychoscope.v1.TipoMetrica
-	18, // 22: psychoscope.v1.Metrica.rotulos:type_name -> psychoscope.v1.Metrica.RotulosEntry
-	14, // 23: psychoscope.v1.ListaMetricas.metricas:type_name -> psychoscope.v1.Metrica
-	24, // [24:24] is the sub-list for method output_type
-	24, // [24:24] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	6,  // 0: psychoscope.v1.RequisicaoControle.listar_modulos:type_name -> psychoscope.v1.PedidoListarModulos
+	7,  // 1: psychoscope.v1.RequisicaoControle.enviar_comando:type_name -> psychoscope.v1.PedidoEnviarComando
+	8,  // 2: psychoscope.v1.RequisicaoControle.assinar_alertas:type_name -> psychoscope.v1.PedidoAssinarAlertas
+	9,  // 3: psychoscope.v1.RequisicaoControle.listar_alertas:type_name -> psychoscope.v1.PedidoListarAlertas
+	10, // 4: psychoscope.v1.RequisicaoControle.metricas:type_name -> psychoscope.v1.PedidoMetricas
+	11, // 5: psychoscope.v1.RequisicaoControle.ler_config:type_name -> psychoscope.v1.PedidoLerConfig
+	12, // 6: psychoscope.v1.RequisicaoControle.aplicar_config:type_name -> psychoscope.v1.PedidoAplicarConfig
+	26, // 7: psychoscope.v1.PedidoEnviarComando.acao:type_name -> psychoscope.v1.ComandoControle.TipoAcao
+	22, // 8: psychoscope.v1.PedidoEnviarComando.parametros:type_name -> psychoscope.v1.PedidoEnviarComando.ParametrosEntry
+	27, // 9: psychoscope.v1.PedidoListarAlertas.desde:type_name -> google.protobuf.Timestamp
+	1,  // 10: psychoscope.v1.PedidoListarAlertas.severidade_minima:type_name -> psychoscope.v1.Severidade
+	23, // 11: psychoscope.v1.PedidoAplicarConfig.ajustes:type_name -> psychoscope.v1.PedidoAplicarConfig.AjustesEntry
+	15, // 12: psychoscope.v1.RespostaControle.modulos:type_name -> psychoscope.v1.ListaModulos
+	16, // 13: psychoscope.v1.RespostaControle.alerta:type_name -> psychoscope.v1.Alerta
+	17, // 14: psychoscope.v1.RespostaControle.alertas:type_name -> psychoscope.v1.ListaAlertas
+	19, // 15: psychoscope.v1.RespostaControle.metricas:type_name -> psychoscope.v1.ListaMetricas
+	21, // 16: psychoscope.v1.RespostaControle.config:type_name -> psychoscope.v1.ListaConfig
+	0,  // 17: psychoscope.v1.ModuloInfo.estado:type_name -> psychoscope.v1.EstadoModulo
+	27, // 18: psychoscope.v1.ModuloInfo.ultimo_contato:type_name -> google.protobuf.Timestamp
+	28, // 19: psychoscope.v1.ModuloInfo.ultimo_status:type_name -> psychoscope.v1.StatusModulo
+	14, // 20: psychoscope.v1.ListaModulos.modulos:type_name -> psychoscope.v1.ModuloInfo
+	1,  // 21: psychoscope.v1.Alerta.severidade:type_name -> psychoscope.v1.Severidade
+	27, // 22: psychoscope.v1.Alerta.timestamp:type_name -> google.protobuf.Timestamp
+	24, // 23: psychoscope.v1.Alerta.contexto:type_name -> psychoscope.v1.Alerta.ContextoEntry
+	16, // 24: psychoscope.v1.ListaAlertas.alertas:type_name -> psychoscope.v1.Alerta
+	2,  // 25: psychoscope.v1.Metrica.tipo:type_name -> psychoscope.v1.TipoMetrica
+	25, // 26: psychoscope.v1.Metrica.rotulos:type_name -> psychoscope.v1.Metrica.RotulosEntry
+	18, // 27: psychoscope.v1.ListaMetricas.metricas:type_name -> psychoscope.v1.Metrica
+	3,  // 28: psychoscope.v1.CampoConfig.tipo:type_name -> psychoscope.v1.TipoCampo
+	4,  // 29: psychoscope.v1.CampoConfig.origem:type_name -> psychoscope.v1.OrigemCampo
+	20, // 30: psychoscope.v1.ListaConfig.campos:type_name -> psychoscope.v1.CampoConfig
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_psychoscope_v1_control_proto_init() }
@@ -1310,20 +1776,23 @@ func file_psychoscope_v1_control_proto_init() {
 		(*RequisicaoControle_AssinarAlertas)(nil),
 		(*RequisicaoControle_ListarAlertas)(nil),
 		(*RequisicaoControle_Metricas)(nil),
+		(*RequisicaoControle_LerConfig)(nil),
+		(*RequisicaoControle_AplicarConfig)(nil),
 	}
-	file_psychoscope_v1_control_proto_msgTypes[6].OneofWrappers = []any{
+	file_psychoscope_v1_control_proto_msgTypes[8].OneofWrappers = []any{
 		(*RespostaControle_Modulos)(nil),
 		(*RespostaControle_Alerta)(nil),
 		(*RespostaControle_Alertas)(nil),
 		(*RespostaControle_Metricas)(nil),
+		(*RespostaControle_Config)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_psychoscope_v1_control_proto_rawDesc), len(file_psychoscope_v1_control_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   16,
+			NumEnums:      5,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
