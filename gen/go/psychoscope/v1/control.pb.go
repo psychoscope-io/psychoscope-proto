@@ -1393,10 +1393,12 @@ type CampoConfig struct {
 	Caminho string    `protobuf:"bytes,1,opt,name=caminho,proto3" json:"caminho,omitempty"`
 	Tipo    TipoCampo `protobuf:"varint,2,opt,name=tipo,proto3,enum=psychoscope.v1.TipoCampo" json:"tipo,omitempty"`
 	// Valores em JSON.
-	ValorAtual    string      `protobuf:"bytes,3,opt,name=valor_atual,json=valorAtual,proto3" json:"valor_atual,omitempty"`
-	ValorPadrao   string      `protobuf:"bytes,4,opt,name=valor_padrao,json=valorPadrao,proto3" json:"valor_padrao,omitempty"`
-	Origem        OrigemCampo `protobuf:"varint,5,opt,name=origem,proto3,enum=psychoscope.v1.OrigemCampo" json:"origem,omitempty"`
-	Descricao     string      `protobuf:"bytes,6,opt,name=descricao,proto3" json:"descricao,omitempty"`
+	ValorAtual  string      `protobuf:"bytes,3,opt,name=valor_atual,json=valorAtual,proto3" json:"valor_atual,omitempty"`
+	ValorPadrao string      `protobuf:"bytes,4,opt,name=valor_padrao,json=valorPadrao,proto3" json:"valor_padrao,omitempty"`
+	Origem      OrigemCampo `protobuf:"varint,5,opt,name=origem,proto3,enum=psychoscope.v1.OrigemCampo" json:"origem,omitempty"`
+	Descricao   string      `protobuf:"bytes,6,opt,name=descricao,proto3" json:"descricao,omitempty"`
+	// Nome para exibir ao usuario (ex.: "Destinos ignorados"). Vazio: usar o caminho.
+	Rotulo        string `protobuf:"bytes,7,opt,name=rotulo,proto3" json:"rotulo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1469,6 +1471,13 @@ func (x *CampoConfig) GetOrigem() OrigemCampo {
 func (x *CampoConfig) GetDescricao() string {
 	if x != nil {
 		return x.Descricao
+	}
+	return ""
+}
+
+func (x *CampoConfig) GetRotulo() string {
+	if x != nil {
+		return x.Rotulo
 	}
 	return ""
 }
@@ -1634,7 +1643,7 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"D\n" +
 	"\rListaMetricas\x123\n" +
-	"\bmetricas\x18\x01 \x03(\v2\x17.psychoscope.v1.MetricaR\bmetricas\"\xed\x01\n" +
+	"\bmetricas\x18\x01 \x03(\v2\x17.psychoscope.v1.MetricaR\bmetricas\"\x85\x02\n" +
 	"\vCampoConfig\x12\x18\n" +
 	"\acaminho\x18\x01 \x01(\tR\acaminho\x12-\n" +
 	"\x04tipo\x18\x02 \x01(\x0e2\x19.psychoscope.v1.TipoCampoR\x04tipo\x12\x1f\n" +
@@ -1642,7 +1651,8 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"valorAtual\x12!\n" +
 	"\fvalor_padrao\x18\x04 \x01(\tR\vvalorPadrao\x123\n" +
 	"\x06origem\x18\x05 \x01(\x0e2\x1b.psychoscope.v1.OrigemCampoR\x06origem\x12\x1c\n" +
-	"\tdescricao\x18\x06 \x01(\tR\tdescricao\"\xac\x01\n" +
+	"\tdescricao\x18\x06 \x01(\tR\tdescricao\x12\x16\n" +
+	"\x06rotulo\x18\a \x01(\tR\x06rotulo\"\xac\x01\n" +
 	"\vListaConfig\x123\n" +
 	"\x06campos\x18\x01 \x03(\v2\x1b.psychoscope.v1.CampoConfigR\x06campos\x12'\n" +
 	"\x0fsomente_leitura\x18\x02 \x01(\bR\x0esomenteLeitura\x12'\n" +

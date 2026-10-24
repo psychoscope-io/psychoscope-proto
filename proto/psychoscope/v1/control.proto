@@ -186,6 +186,8 @@ message CampoConfig {
   string valor_padrao = 4;
   OrigemCampo origem = 5;
   string descricao = 6;
+  // Nome para exibir ao usuario (ex.: "Destinos ignorados"). Vazio: usar o caminho.
+  string rotulo = 7;
 }
 
 message ListaConfig {

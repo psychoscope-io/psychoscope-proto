@@ -557,9 +557,24 @@ type StatusModulo struct {
 	UsoMemoriaMb       float64                `protobuf:"fixed64,4,opt,name=uso_memoria_mb,json=usoMemoriaMb,proto3" json:"uso_memoria_mb,omitempty"`
 	UsoCpuPercent      float64                `protobuf:"fixed64,5,opt,name=uso_cpu_percent,json=usoCpuPercent,proto3" json:"uso_cpu_percent,omitempty"`
 	PacotesCapturados  uint64                 `protobuf:"varint,6,opt,name=pacotes_capturados,json=pacotesCapturados,proto3" json:"pacotes_capturados,omitempty"`
-	PacotesDescartados uint64                 `protobuf:"varint,7,opt,name=pacotes_descartados,json=pacotesDescartados,proto3" json:"pacotes_descartados,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Soma de todas as perdas do modulo (pacotes e eventos); o detalhe esta em `contadores`.
+	PacotesDescartados uint64 `protobuf:"varint,7,opt,name=pacotes_descartados,json=pacotesDescartados,proto3" json:"pacotes_descartados,omitempty"`
+	// Contadores especificos do modulo, cumulativos desde o inicio do processo. Chaves em
+	// minusculas com pontos; quem exibe conhece algumas e mostra as demais pelo proprio nome.
+	// mod-net-sensor:
+	//   perda.kernel              pacotes descartados pelo buffer do kernel (libpcap ps_drop)
+	//   perda.interface           pacotes descartados pela interface (libpcap ps_ifdrop)
+	//   perda.fila_captura        pacotes descartados porque a fila entre captura e decodificador encheu
+	//   perda.fila_eventos        eventos descartados porque a fila para o cliente IPC encheu
+	//   perda.ipc                 eventos descartados na reconexao ou por falha de escrita no socket
+	//   decode.malformado         quadros truncados ou malformados
+	//   decode.nao_suportado      quadros de protocolo nao suportado (ARP e afins; ruido normal)
+	//   ip.fragmento              fragmentos IP nao iniciais (nao remontados)
+	//   politica.filtrados        pacotes decodificados que a politica de emissao nao transformou em evento
+	//   remontagem.descartados    fluxos TLS descartados pela remontagem (limite, validade, lacuna)
+	Contadores    map[string]uint64 `protobuf:"bytes,8,rep,name=contadores,proto3" json:"contadores,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StatusModulo) Reset() {
@@ -639,6 +654,13 @@ func (x *StatusModulo) GetPacotesDescartados() uint64 {
 		return x.PacotesDescartados
 	}
 	return 0
+}
+
+func (x *StatusModulo) GetContadores() map[string]uint64 {
+	if x != nil {
+		return x.Contadores
+	}
+	return nil
 }
 
 type EventoTelemetria struct {
@@ -897,7 +919,7 @@ type EventoFluxoRede_MetadadosDNS struct {
 
 func (x *EventoFluxoRede_MetadadosDNS) Reset() {
 	*x = EventoFluxoRede_MetadadosDNS{}
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[9]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -909,7 +931,7 @@ func (x *EventoFluxoRede_MetadadosDNS) String() string {
 func (*EventoFluxoRede_MetadadosDNS) ProtoMessage() {}
 
 func (x *EventoFluxoRede_MetadadosDNS) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[9]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -970,7 +992,7 @@ type EventoFluxoRede_MetadadosTLS struct {
 
 func (x *EventoFluxoRede_MetadadosTLS) Reset() {
 	*x = EventoFluxoRede_MetadadosTLS{}
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -982,7 +1004,7 @@ func (x *EventoFluxoRede_MetadadosTLS) String() string {
 func (*EventoFluxoRede_MetadadosTLS) ProtoMessage() {}
 
 func (x *EventoFluxoRede_MetadadosTLS) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1061,7 +1083,7 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	"\x0fRespostaComando\x122\n" +
 	"\x15id_comando_referencia\x18\x01 \x01(\tR\x13idComandoReferencia\x12\x18\n" +
 	"\asucesso\x18\x02 \x01(\bR\asucesso\x12#\n" +
-	"\rmensagem_erro\x18\x03 \x01(\tR\fmensagemErro\"\xb7\x02\n" +
+	"\rmensagem_erro\x18\x03 \x01(\tR\fmensagemErro\"\xc4\x03\n" +
 	"\fStatusModulo\x12\x1b\n" +
 	"\tid_modulo\x18\x01 \x01(\tR\bidModulo\x12/\n" +
 	"\x13eventos_processados\x18\x02 \x01(\x04R\x12eventosProcessados\x12+\n" +
@@ -1069,7 +1091,13 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	"\x0euso_memoria_mb\x18\x04 \x01(\x01R\fusoMemoriaMb\x12&\n" +
 	"\x0fuso_cpu_percent\x18\x05 \x01(\x01R\rusoCpuPercent\x12-\n" +
 	"\x12pacotes_capturados\x18\x06 \x01(\x04R\x11pacotesCapturados\x12/\n" +
-	"\x13pacotes_descartados\x18\a \x01(\x04R\x12pacotesDescartados\"n\n" +
+	"\x13pacotes_descartados\x18\a \x01(\x04R\x12pacotesDescartados\x12L\n" +
+	"\n" +
+	"contadores\x18\b \x03(\v2,.psychoscope.v1.StatusModulo.ContadoresEntryR\n" +
+	"contadores\x1a=\n" +
+	"\x0fContadoresEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x04R\x05value:\x028\x01\"n\n" +
 	"\x10EventoTelemetria\x12\x1b\n" +
 	"\tid_modulo\x18\x01 \x01(\tR\bidModulo\x125\n" +
 	"\x04rede\x18\x02 \x01(\v2\x1f.psychoscope.v1.EventoFluxoRedeH\x00R\x04redeB\x06\n" +
@@ -1122,7 +1150,7 @@ func file_psychoscope_v1_ipc_proto_rawDescGZIP() []byte {
 }
 
 var file_psychoscope_v1_ipc_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_psychoscope_v1_ipc_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_psychoscope_v1_ipc_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_psychoscope_v1_ipc_proto_goTypes = []any{
 	(ProtocoloTransporte)(0),             // 0: psychoscope.v1.ProtocoloTransporte
 	(ComandoControle_TipoAcao)(0),        // 1: psychoscope.v1.ComandoControle.TipoAcao
@@ -1135,12 +1163,13 @@ var file_psychoscope_v1_ipc_proto_goTypes = []any{
 	(*EventoTelemetria)(nil),             // 8: psychoscope.v1.EventoTelemetria
 	(*EventoFluxoRede)(nil),              // 9: psychoscope.v1.EventoFluxoRede
 	nil,                                  // 10: psychoscope.v1.ComandoControle.ParametrosEntry
-	(*EventoFluxoRede_MetadadosDNS)(nil), // 11: psychoscope.v1.EventoFluxoRede.MetadadosDNS
-	(*EventoFluxoRede_MetadadosTLS)(nil), // 12: psychoscope.v1.EventoFluxoRede.MetadadosTLS
-	(*timestamppb.Timestamp)(nil),        // 13: google.protobuf.Timestamp
+	nil,                                  // 11: psychoscope.v1.StatusModulo.ContadoresEntry
+	(*EventoFluxoRede_MetadadosDNS)(nil), // 12: psychoscope.v1.EventoFluxoRede.MetadadosDNS
+	(*EventoFluxoRede_MetadadosTLS)(nil), // 13: psychoscope.v1.EventoFluxoRede.MetadadosTLS
+	(*timestamppb.Timestamp)(nil),        // 14: google.protobuf.Timestamp
 }
 var file_psychoscope_v1_ipc_proto_depIdxs = []int32{
-	13, // 0: psychoscope.v1.MensagemIPC.timestamp:type_name -> google.protobuf.Timestamp
+	14, // 0: psychoscope.v1.MensagemIPC.timestamp:type_name -> google.protobuf.Timestamp
 	8,  // 1: psychoscope.v1.MensagemIPC.telemetria:type_name -> psychoscope.v1.EventoTelemetria
 	6,  // 2: psychoscope.v1.MensagemIPC.resposta:type_name -> psychoscope.v1.RespostaComando
 	7,  // 3: psychoscope.v1.MensagemIPC.status:type_name -> psychoscope.v1.StatusModulo
@@ -1149,16 +1178,17 @@ var file_psychoscope_v1_ipc_proto_depIdxs = []int32{
 	4,  // 6: psychoscope.v1.MensagemIPC.hello_resposta:type_name -> psychoscope.v1.HelloResposta
 	1,  // 7: psychoscope.v1.ComandoControle.acao:type_name -> psychoscope.v1.ComandoControle.TipoAcao
 	10, // 8: psychoscope.v1.ComandoControle.parametros:type_name -> psychoscope.v1.ComandoControle.ParametrosEntry
-	9,  // 9: psychoscope.v1.EventoTelemetria.rede:type_name -> psychoscope.v1.EventoFluxoRede
-	0,  // 10: psychoscope.v1.EventoFluxoRede.protocolo:type_name -> psychoscope.v1.ProtocoloTransporte
-	11, // 11: psychoscope.v1.EventoFluxoRede.dns:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosDNS
-	12, // 12: psychoscope.v1.EventoFluxoRede.tls:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosTLS
-	13, // 13: psychoscope.v1.EventoFluxoRede.timestamp_captura:type_name -> google.protobuf.Timestamp
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	11, // 9: psychoscope.v1.StatusModulo.contadores:type_name -> psychoscope.v1.StatusModulo.ContadoresEntry
+	9,  // 10: psychoscope.v1.EventoTelemetria.rede:type_name -> psychoscope.v1.EventoFluxoRede
+	0,  // 11: psychoscope.v1.EventoFluxoRede.protocolo:type_name -> psychoscope.v1.ProtocoloTransporte
+	12, // 12: psychoscope.v1.EventoFluxoRede.dns:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosDNS
+	13, // 13: psychoscope.v1.EventoFluxoRede.tls:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosTLS
+	14, // 14: psychoscope.v1.EventoFluxoRede.timestamp_captura:type_name -> google.protobuf.Timestamp
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_psychoscope_v1_ipc_proto_init() }
@@ -1187,7 +1217,7 @@ func file_psychoscope_v1_ipc_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_psychoscope_v1_ipc_proto_rawDesc), len(file_psychoscope_v1_ipc_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

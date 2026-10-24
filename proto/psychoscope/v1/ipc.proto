@@ -68,7 +68,22 @@ message StatusModulo {
   double uso_memoria_mb = 4;
   double uso_cpu_percent = 5;
   uint64 pacotes_capturados = 6;
+  // Soma de todas as perdas do modulo (pacotes e eventos); o detalhe esta em `contadores`.
   uint64 pacotes_descartados = 7;
+  // Contadores especificos do modulo, cumulativos desde o inicio do processo. Chaves em
+  // minusculas com pontos; quem exibe conhece algumas e mostra as demais pelo proprio nome.
+  // mod-net-sensor:
+  //   perda.kernel              pacotes descartados pelo buffer do kernel (libpcap ps_drop)
+  //   perda.interface           pacotes descartados pela interface (libpcap ps_ifdrop)
+  //   perda.fila_captura        pacotes descartados porque a fila entre captura e decodificador encheu
+  //   perda.fila_eventos        eventos descartados porque a fila para o cliente IPC encheu
+  //   perda.ipc                 eventos descartados na reconexao ou por falha de escrita no socket
+  //   decode.malformado         quadros truncados ou malformados
+  //   decode.nao_suportado      quadros de protocolo nao suportado (ARP e afins; ruido normal)
+  //   ip.fragmento              fragmentos IP nao iniciais (nao remontados)
+  //   politica.filtrados        pacotes decodificados que a politica de emissao nao transformou em evento
+  //   remontagem.descartados    fluxos TLS descartados pela remontagem (limite, validade, lacuna)
+  map<string, uint64> contadores = 8;
 }
 
 message EventoTelemetria {
