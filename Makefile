@@ -1,4 +1,4 @@
-.PHONY: gen lint breaking check precommit hooks
+.PHONY: gen lint breaking check precommit hooks tag
 
 gen:
 	buf generate
@@ -26,3 +26,7 @@ precommit:
 # Ativa os hooks versionados em .githooks (commit-msg, pre-commit, pre-push).
 hooks:
 	git config core.hooksPath .githooks
+
+# Cria a tag anotada da proxima versao (interativo; so local, nao faz push). Veja scripts/tag.sh --help.
+tag:
+	scripts/tag.sh
