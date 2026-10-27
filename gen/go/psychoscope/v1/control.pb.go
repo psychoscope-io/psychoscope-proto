@@ -992,8 +992,13 @@ type ModuloInfo struct {
 	UltimoContato *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=ultimo_contato,json=ultimoContato,proto3" json:"ultimo_contato,omitempty"`
 	UltimoStatus  *StatusModulo          `protobuf:"bytes,6,opt,name=ultimo_status,json=ultimoStatus,proto3" json:"ultimo_status,omitempty"`
 	UltimoErro    string                 `protobuf:"bytes,7,opt,name=ultimo_erro,json=ultimoErro,proto3" json:"ultimo_erro,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Versao que o modulo declarou no HelloModulo; vazia quando nao ha conexao ativa.
+	VersaoModulo string `protobuf:"bytes,8,opt,name=versao_modulo,json=versaoModulo,proto3" json:"versao_modulo,omitempty"`
+	// Inicio da conexao ativa do modulo (na pratica, a vida do processo, pois reiniciar o modulo
+	// abre outra conexao); ausente quando nao ha conexao ativa.
+	ConectadoDesde *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=conectado_desde,json=conectadoDesde,proto3" json:"conectado_desde,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *ModuloInfo) Reset() {
@@ -1073,6 +1078,20 @@ func (x *ModuloInfo) GetUltimoErro() string {
 		return x.UltimoErro
 	}
 	return ""
+}
+
+func (x *ModuloInfo) GetVersaoModulo() string {
+	if x != nil {
+		return x.VersaoModulo
+	}
+	return ""
+}
+
+func (x *ModuloInfo) GetConectadoDesde() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ConectadoDesde
+	}
+	return nil
 }
 
 type ListaModulos struct {
@@ -1604,7 +1623,7 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\aalertas\x18\x06 \x01(\v2\x1c.psychoscope.v1.ListaAlertasH\x00R\aalertas\x12;\n" +
 	"\bmetricas\x18\a \x01(\v2\x1d.psychoscope.v1.ListaMetricasH\x00R\bmetricas\x125\n" +
 	"\x06config\x18\b \x01(\v2\x1b.psychoscope.v1.ListaConfigH\x00R\x06configB\v\n" +
-	"\tresultado\"\xb6\x02\n" +
+	"\tresultado\"\xa0\x03\n" +
 	"\n" +
 	"ModuloInfo\x12\x1b\n" +
 	"\tid_modulo\x18\x01 \x01(\tR\bidModulo\x124\n" +
@@ -1614,7 +1633,9 @@ const file_psychoscope_v1_control_proto_rawDesc = "" +
 	"\x0eultimo_contato\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\rultimoContato\x12A\n" +
 	"\rultimo_status\x18\x06 \x01(\v2\x1c.psychoscope.v1.StatusModuloR\fultimoStatus\x12\x1f\n" +
 	"\vultimo_erro\x18\a \x01(\tR\n" +
-	"ultimoErro\"D\n" +
+	"ultimoErro\x12#\n" +
+	"\rversao_modulo\x18\b \x01(\tR\fversaoModulo\x12C\n" +
+	"\x0fconectado_desde\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\x0econectadoDesde\"D\n" +
 	"\fListaModulos\x124\n" +
 	"\amodulos\x18\x01 \x03(\v2\x1a.psychoscope.v1.ModuloInfoR\amodulos\"\xf8\x02\n" +
 	"\x06Alerta\x12\x1b\n" +
@@ -1756,22 +1777,23 @@ var file_psychoscope_v1_control_proto_depIdxs = []int32{
 	0,  // 17: psychoscope.v1.ModuloInfo.estado:type_name -> psychoscope.v1.EstadoModulo
 	27, // 18: psychoscope.v1.ModuloInfo.ultimo_contato:type_name -> google.protobuf.Timestamp
 	28, // 19: psychoscope.v1.ModuloInfo.ultimo_status:type_name -> psychoscope.v1.StatusModulo
-	14, // 20: psychoscope.v1.ListaModulos.modulos:type_name -> psychoscope.v1.ModuloInfo
-	1,  // 21: psychoscope.v1.Alerta.severidade:type_name -> psychoscope.v1.Severidade
-	27, // 22: psychoscope.v1.Alerta.timestamp:type_name -> google.protobuf.Timestamp
-	24, // 23: psychoscope.v1.Alerta.contexto:type_name -> psychoscope.v1.Alerta.ContextoEntry
-	16, // 24: psychoscope.v1.ListaAlertas.alertas:type_name -> psychoscope.v1.Alerta
-	2,  // 25: psychoscope.v1.Metrica.tipo:type_name -> psychoscope.v1.TipoMetrica
-	25, // 26: psychoscope.v1.Metrica.rotulos:type_name -> psychoscope.v1.Metrica.RotulosEntry
-	18, // 27: psychoscope.v1.ListaMetricas.metricas:type_name -> psychoscope.v1.Metrica
-	3,  // 28: psychoscope.v1.CampoConfig.tipo:type_name -> psychoscope.v1.TipoCampo
-	4,  // 29: psychoscope.v1.CampoConfig.origem:type_name -> psychoscope.v1.OrigemCampo
-	20, // 30: psychoscope.v1.ListaConfig.campos:type_name -> psychoscope.v1.CampoConfig
-	31, // [31:31] is the sub-list for method output_type
-	31, // [31:31] is the sub-list for method input_type
-	31, // [31:31] is the sub-list for extension type_name
-	31, // [31:31] is the sub-list for extension extendee
-	0,  // [0:31] is the sub-list for field type_name
+	27, // 20: psychoscope.v1.ModuloInfo.conectado_desde:type_name -> google.protobuf.Timestamp
+	14, // 21: psychoscope.v1.ListaModulos.modulos:type_name -> psychoscope.v1.ModuloInfo
+	1,  // 22: psychoscope.v1.Alerta.severidade:type_name -> psychoscope.v1.Severidade
+	27, // 23: psychoscope.v1.Alerta.timestamp:type_name -> google.protobuf.Timestamp
+	24, // 24: psychoscope.v1.Alerta.contexto:type_name -> psychoscope.v1.Alerta.ContextoEntry
+	16, // 25: psychoscope.v1.ListaAlertas.alertas:type_name -> psychoscope.v1.Alerta
+	2,  // 26: psychoscope.v1.Metrica.tipo:type_name -> psychoscope.v1.TipoMetrica
+	25, // 27: psychoscope.v1.Metrica.rotulos:type_name -> psychoscope.v1.Metrica.RotulosEntry
+	18, // 28: psychoscope.v1.ListaMetricas.metricas:type_name -> psychoscope.v1.Metrica
+	3,  // 29: psychoscope.v1.CampoConfig.tipo:type_name -> psychoscope.v1.TipoCampo
+	4,  // 30: psychoscope.v1.CampoConfig.origem:type_name -> psychoscope.v1.OrigemCampo
+	20, // 31: psychoscope.v1.ListaConfig.campos:type_name -> psychoscope.v1.CampoConfig
+	32, // [32:32] is the sub-list for method output_type
+	32, // [32:32] is the sub-list for method input_type
+	32, // [32:32] is the sub-list for extension type_name
+	32, // [32:32] is the sub-list for extension extendee
+	0,  // [0:32] is the sub-list for field type_name
 }
 
 func init() { file_psychoscope_v1_control_proto_init() }

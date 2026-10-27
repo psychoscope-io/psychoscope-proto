@@ -104,6 +104,11 @@ message ModuloInfo {
   google.protobuf.Timestamp ultimo_contato = 5;
   StatusModulo ultimo_status = 6;
   string ultimo_erro = 7;
+  // Versao que o modulo declarou no HelloModulo; vazia quando nao ha conexao ativa.
+  string versao_modulo = 8;
+  // Inicio da conexao ativa do modulo (na pratica, a vida do processo, pois reiniciar o modulo
+  // abre outra conexao); ausente quando nao ha conexao ativa.
+  google.protobuf.Timestamp conectado_desde = 9;
 }
 
 message ListaModulos {

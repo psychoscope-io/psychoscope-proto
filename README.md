@@ -39,6 +39,7 @@ Apache License 2.0 — veja [LICENSE](LICENSE).
 
 ## Versões
 
+- `v0.5.0`: `ModuloInfo` ganha `versao_modulo` (versão declarada no `HelloModulo`) e `conectado_desde` (início da conexão ativa), ambos aditivos e vazios quando o módulo não está conectado. `ipc.proto` não mudou: módulos compilados contra versões anteriores continuam compatíveis, e CLIs antigas ignoram os campos novos.
 - `v0.4.0`: `StatusModulo` ganha `contadores` (mapa de contadores do módulo; as chaves do `mod-net-sensor` estão documentadas no `ipc.proto`) e `CampoConfig` ganha `rotulo` (nome para exibir ao usuário), ambos aditivos. Módulos e Cores compilados contra `v0.3.0` continuam compatíveis: ignoram os campos novos.
 - `v0.3.0`: `control.proto` ganha leitura e aplicação de configuração (`PedidoLerConfig`, `PedidoAplicarConfig`, `ListaConfig`, `CampoConfig`), aditivo. A escrita é restrita ao root pelo Core (UID por `SO_PEERCRED`). `ipc.proto` não mudou.
 - `v0.2.0`: `control.proto` ganha consulta de alertas persistidos (`PedidoListarAlertas`) e métricas (`PedidoMetricas`), aditivo. `ipc.proto` não mudou: módulos compilados contra `v0.1.0` continuam compatíveis.
