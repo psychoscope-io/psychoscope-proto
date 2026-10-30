@@ -89,9 +89,25 @@ message StatusModulo {
 message EventoTelemetria {
   string id_modulo = 1;
 
+  // Variante do evento. Um Core que não conhece a variante recebida a ignora (o oneof chega vazio).
   oneof dado {
     EventoFluxoRede rede = 2;
+    EventoGenerico generico = 3;
   }
+}
+
+// Evento de um módulo que ainda não tem variante própria no contrato: serve a módulos de
+// terceiros e ao módulo de exemplo. Um módulo com semântica estável ganha uma variante tipada
+// (como EventoFluxoRede), porque atributos em texto não são verificados pelo contrato.
+// Limites (o Core descarta o evento que os violar, sem derrubar a sessão): tipo e chaves de
+// atributos em [a-z0-9._-], até 64 caracteres; até 32 atributos; valores de até 256 bytes.
+message EventoGenerico {
+  // Natureza do evento, definida pelo módulo (ex.: "login.falha"). Vazio é inválido.
+  string tipo = 1;
+  // Instante do evento no módulo. Ausente = o Core usa o instante de chegada.
+  google.protobuf.Timestamp timestamp = 2;
+  // Dados do evento, chave e valor em texto.
+  map<string, string> atributos = 3;
 }
 
 enum ProtocoloTransporte {

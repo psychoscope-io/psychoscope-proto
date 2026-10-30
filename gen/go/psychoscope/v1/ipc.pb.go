@@ -666,9 +666,12 @@ func (x *StatusModulo) GetContadores() map[string]uint64 {
 type EventoTelemetria struct {
 	state    protoimpl.MessageState `protogen:"open.v1"`
 	IdModulo string                 `protobuf:"bytes,1,opt,name=id_modulo,json=idModulo,proto3" json:"id_modulo,omitempty"`
+	// Variante do evento. Um Core que não conhece a variante recebida a ignora (o oneof chega vazio).
+	//
 	// Types that are valid to be assigned to Dado:
 	//
 	//	*EventoTelemetria_Rede
+	//	*EventoTelemetria_Generico
 	Dado          isEventoTelemetria_Dado `protobuf_oneof:"dado"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -727,6 +730,15 @@ func (x *EventoTelemetria) GetRede() *EventoFluxoRede {
 	return nil
 }
 
+func (x *EventoTelemetria) GetGenerico() *EventoGenerico {
+	if x != nil {
+		if x, ok := x.Dado.(*EventoTelemetria_Generico); ok {
+			return x.Generico
+		}
+	}
+	return nil
+}
+
 type isEventoTelemetria_Dado interface {
 	isEventoTelemetria_Dado()
 }
@@ -735,7 +747,81 @@ type EventoTelemetria_Rede struct {
 	Rede *EventoFluxoRede `protobuf:"bytes,2,opt,name=rede,proto3,oneof"`
 }
 
+type EventoTelemetria_Generico struct {
+	Generico *EventoGenerico `protobuf:"bytes,3,opt,name=generico,proto3,oneof"`
+}
+
 func (*EventoTelemetria_Rede) isEventoTelemetria_Dado() {}
+
+func (*EventoTelemetria_Generico) isEventoTelemetria_Dado() {}
+
+// Evento de um módulo que ainda não tem variante própria no contrato: serve a módulos de
+// terceiros e ao módulo de exemplo. Um módulo com semântica estável ganha uma variante tipada
+// (como EventoFluxoRede), porque atributos em texto não são verificados pelo contrato.
+// Limites (o Core descarta o evento que os violar, sem derrubar a sessão): tipo e chaves de
+// atributos em [a-z0-9._-], até 64 caracteres; até 32 atributos; valores de até 256 bytes.
+type EventoGenerico struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Natureza do evento, definida pelo módulo (ex.: "login.falha"). Vazio é inválido.
+	Tipo string `protobuf:"bytes,1,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	// Instante do evento no módulo. Ausente = o Core usa o instante de chegada.
+	Timestamp *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	// Dados do evento, chave e valor em texto.
+	Atributos     map[string]string `protobuf:"bytes,3,rep,name=atributos,proto3" json:"atributos,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventoGenerico) Reset() {
+	*x = EventoGenerico{}
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventoGenerico) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventoGenerico) ProtoMessage() {}
+
+func (x *EventoGenerico) ProtoReflect() protoreflect.Message {
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventoGenerico.ProtoReflect.Descriptor instead.
+func (*EventoGenerico) Descriptor() ([]byte, []int) {
+	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *EventoGenerico) GetTipo() string {
+	if x != nil {
+		return x.Tipo
+	}
+	return ""
+}
+
+func (x *EventoGenerico) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+func (x *EventoGenerico) GetAtributos() map[string]string {
+	if x != nil {
+		return x.Atributos
+	}
+	return nil
+}
 
 type EventoFluxoRede struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -765,7 +851,7 @@ type EventoFluxoRede struct {
 
 func (x *EventoFluxoRede) Reset() {
 	*x = EventoFluxoRede{}
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[7]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -777,7 +863,7 @@ func (x *EventoFluxoRede) String() string {
 func (*EventoFluxoRede) ProtoMessage() {}
 
 func (x *EventoFluxoRede) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[7]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -790,7 +876,7 @@ func (x *EventoFluxoRede) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventoFluxoRede.ProtoReflect.Descriptor instead.
 func (*EventoFluxoRede) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{7}
+	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *EventoFluxoRede) GetIpOrigem() string {
@@ -919,7 +1005,7 @@ type EventoFluxoRede_MetadadosDNS struct {
 
 func (x *EventoFluxoRede_MetadadosDNS) Reset() {
 	*x = EventoFluxoRede_MetadadosDNS{}
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -931,7 +1017,7 @@ func (x *EventoFluxoRede_MetadadosDNS) String() string {
 func (*EventoFluxoRede_MetadadosDNS) ProtoMessage() {}
 
 func (x *EventoFluxoRede_MetadadosDNS) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[10]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -944,7 +1030,7 @@ func (x *EventoFluxoRede_MetadadosDNS) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventoFluxoRede_MetadadosDNS.ProtoReflect.Descriptor instead.
 func (*EventoFluxoRede_MetadadosDNS) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{7, 0}
+	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{8, 0}
 }
 
 func (x *EventoFluxoRede_MetadadosDNS) GetDominioConsultado() string {
@@ -992,7 +1078,7 @@ type EventoFluxoRede_MetadadosTLS struct {
 
 func (x *EventoFluxoRede_MetadadosTLS) Reset() {
 	*x = EventoFluxoRede_MetadadosTLS{}
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[11]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1004,7 +1090,7 @@ func (x *EventoFluxoRede_MetadadosTLS) String() string {
 func (*EventoFluxoRede_MetadadosTLS) ProtoMessage() {}
 
 func (x *EventoFluxoRede_MetadadosTLS) ProtoReflect() protoreflect.Message {
-	mi := &file_psychoscope_v1_ipc_proto_msgTypes[11]
+	mi := &file_psychoscope_v1_ipc_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1017,7 +1103,7 @@ func (x *EventoFluxoRede_MetadadosTLS) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventoFluxoRede_MetadadosTLS.ProtoReflect.Descriptor instead.
 func (*EventoFluxoRede_MetadadosTLS) Descriptor() ([]byte, []int) {
-	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{7, 1}
+	return file_psychoscope_v1_ipc_proto_rawDescGZIP(), []int{8, 1}
 }
 
 func (x *EventoFluxoRede_MetadadosTLS) GetSniHostname() string {
@@ -1097,11 +1183,19 @@ const file_psychoscope_v1_ipc_proto_rawDesc = "" +
 	"contadores\x1a=\n" +
 	"\x0fContadoresEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x04R\x05value:\x028\x01\"n\n" +
+	"\x05value\x18\x02 \x01(\x04R\x05value:\x028\x01\"\xac\x01\n" +
 	"\x10EventoTelemetria\x12\x1b\n" +
 	"\tid_modulo\x18\x01 \x01(\tR\bidModulo\x125\n" +
-	"\x04rede\x18\x02 \x01(\v2\x1f.psychoscope.v1.EventoFluxoRedeH\x00R\x04redeB\x06\n" +
-	"\x04dado\"\xd9\x06\n" +
+	"\x04rede\x18\x02 \x01(\v2\x1f.psychoscope.v1.EventoFluxoRedeH\x00R\x04rede\x12<\n" +
+	"\bgenerico\x18\x03 \x01(\v2\x1e.psychoscope.v1.EventoGenericoH\x00R\bgenericoB\x06\n" +
+	"\x04dado\"\xe9\x01\n" +
+	"\x0eEventoGenerico\x12\x12\n" +
+	"\x04tipo\x18\x01 \x01(\tR\x04tipo\x128\n" +
+	"\ttimestamp\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12K\n" +
+	"\tatributos\x18\x03 \x03(\v2-.psychoscope.v1.EventoGenerico.AtributosEntryR\tatributos\x1a<\n" +
+	"\x0eAtributosEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd9\x06\n" +
 	"\x0fEventoFluxoRede\x12\x1b\n" +
 	"\tip_origem\x18\x01 \x01(\tR\bipOrigem\x12!\n" +
 	"\fporta_origem\x18\x02 \x01(\rR\vportaOrigem\x12\x1d\n" +
@@ -1150,7 +1244,7 @@ func file_psychoscope_v1_ipc_proto_rawDescGZIP() []byte {
 }
 
 var file_psychoscope_v1_ipc_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_psychoscope_v1_ipc_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_psychoscope_v1_ipc_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_psychoscope_v1_ipc_proto_goTypes = []any{
 	(ProtocoloTransporte)(0),             // 0: psychoscope.v1.ProtocoloTransporte
 	(ComandoControle_TipoAcao)(0),        // 1: psychoscope.v1.ComandoControle.TipoAcao
@@ -1161,15 +1255,17 @@ var file_psychoscope_v1_ipc_proto_goTypes = []any{
 	(*RespostaComando)(nil),              // 6: psychoscope.v1.RespostaComando
 	(*StatusModulo)(nil),                 // 7: psychoscope.v1.StatusModulo
 	(*EventoTelemetria)(nil),             // 8: psychoscope.v1.EventoTelemetria
-	(*EventoFluxoRede)(nil),              // 9: psychoscope.v1.EventoFluxoRede
-	nil,                                  // 10: psychoscope.v1.ComandoControle.ParametrosEntry
-	nil,                                  // 11: psychoscope.v1.StatusModulo.ContadoresEntry
-	(*EventoFluxoRede_MetadadosDNS)(nil), // 12: psychoscope.v1.EventoFluxoRede.MetadadosDNS
-	(*EventoFluxoRede_MetadadosTLS)(nil), // 13: psychoscope.v1.EventoFluxoRede.MetadadosTLS
-	(*timestamppb.Timestamp)(nil),        // 14: google.protobuf.Timestamp
+	(*EventoGenerico)(nil),               // 9: psychoscope.v1.EventoGenerico
+	(*EventoFluxoRede)(nil),              // 10: psychoscope.v1.EventoFluxoRede
+	nil,                                  // 11: psychoscope.v1.ComandoControle.ParametrosEntry
+	nil,                                  // 12: psychoscope.v1.StatusModulo.ContadoresEntry
+	nil,                                  // 13: psychoscope.v1.EventoGenerico.AtributosEntry
+	(*EventoFluxoRede_MetadadosDNS)(nil), // 14: psychoscope.v1.EventoFluxoRede.MetadadosDNS
+	(*EventoFluxoRede_MetadadosTLS)(nil), // 15: psychoscope.v1.EventoFluxoRede.MetadadosTLS
+	(*timestamppb.Timestamp)(nil),        // 16: google.protobuf.Timestamp
 }
 var file_psychoscope_v1_ipc_proto_depIdxs = []int32{
-	14, // 0: psychoscope.v1.MensagemIPC.timestamp:type_name -> google.protobuf.Timestamp
+	16, // 0: psychoscope.v1.MensagemIPC.timestamp:type_name -> google.protobuf.Timestamp
 	8,  // 1: psychoscope.v1.MensagemIPC.telemetria:type_name -> psychoscope.v1.EventoTelemetria
 	6,  // 2: psychoscope.v1.MensagemIPC.resposta:type_name -> psychoscope.v1.RespostaComando
 	7,  // 3: psychoscope.v1.MensagemIPC.status:type_name -> psychoscope.v1.StatusModulo
@@ -1177,18 +1273,21 @@ var file_psychoscope_v1_ipc_proto_depIdxs = []int32{
 	3,  // 5: psychoscope.v1.MensagemIPC.hello:type_name -> psychoscope.v1.HelloModulo
 	4,  // 6: psychoscope.v1.MensagemIPC.hello_resposta:type_name -> psychoscope.v1.HelloResposta
 	1,  // 7: psychoscope.v1.ComandoControle.acao:type_name -> psychoscope.v1.ComandoControle.TipoAcao
-	10, // 8: psychoscope.v1.ComandoControle.parametros:type_name -> psychoscope.v1.ComandoControle.ParametrosEntry
-	11, // 9: psychoscope.v1.StatusModulo.contadores:type_name -> psychoscope.v1.StatusModulo.ContadoresEntry
-	9,  // 10: psychoscope.v1.EventoTelemetria.rede:type_name -> psychoscope.v1.EventoFluxoRede
-	0,  // 11: psychoscope.v1.EventoFluxoRede.protocolo:type_name -> psychoscope.v1.ProtocoloTransporte
-	12, // 12: psychoscope.v1.EventoFluxoRede.dns:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosDNS
-	13, // 13: psychoscope.v1.EventoFluxoRede.tls:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosTLS
-	14, // 14: psychoscope.v1.EventoFluxoRede.timestamp_captura:type_name -> google.protobuf.Timestamp
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	11, // 8: psychoscope.v1.ComandoControle.parametros:type_name -> psychoscope.v1.ComandoControle.ParametrosEntry
+	12, // 9: psychoscope.v1.StatusModulo.contadores:type_name -> psychoscope.v1.StatusModulo.ContadoresEntry
+	10, // 10: psychoscope.v1.EventoTelemetria.rede:type_name -> psychoscope.v1.EventoFluxoRede
+	9,  // 11: psychoscope.v1.EventoTelemetria.generico:type_name -> psychoscope.v1.EventoGenerico
+	16, // 12: psychoscope.v1.EventoGenerico.timestamp:type_name -> google.protobuf.Timestamp
+	13, // 13: psychoscope.v1.EventoGenerico.atributos:type_name -> psychoscope.v1.EventoGenerico.AtributosEntry
+	0,  // 14: psychoscope.v1.EventoFluxoRede.protocolo:type_name -> psychoscope.v1.ProtocoloTransporte
+	14, // 15: psychoscope.v1.EventoFluxoRede.dns:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosDNS
+	15, // 16: psychoscope.v1.EventoFluxoRede.tls:type_name -> psychoscope.v1.EventoFluxoRede.MetadadosTLS
+	16, // 17: psychoscope.v1.EventoFluxoRede.timestamp_captura:type_name -> google.protobuf.Timestamp
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_psychoscope_v1_ipc_proto_init() }
@@ -1206,8 +1305,9 @@ func file_psychoscope_v1_ipc_proto_init() {
 	}
 	file_psychoscope_v1_ipc_proto_msgTypes[6].OneofWrappers = []any{
 		(*EventoTelemetria_Rede)(nil),
+		(*EventoTelemetria_Generico)(nil),
 	}
-	file_psychoscope_v1_ipc_proto_msgTypes[7].OneofWrappers = []any{
+	file_psychoscope_v1_ipc_proto_msgTypes[8].OneofWrappers = []any{
 		(*EventoFluxoRede_Dns)(nil),
 		(*EventoFluxoRede_Tls)(nil),
 	}
@@ -1217,7 +1317,7 @@ func file_psychoscope_v1_ipc_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_psychoscope_v1_ipc_proto_rawDesc), len(file_psychoscope_v1_ipc_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
