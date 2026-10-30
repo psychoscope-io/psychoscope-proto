@@ -758,8 +758,9 @@ func (*EventoTelemetria_Generico) isEventoTelemetria_Dado() {}
 // Evento de um módulo que ainda não tem variante própria no contrato: serve a módulos de
 // terceiros e ao módulo de exemplo. Um módulo com semântica estável ganha uma variante tipada
 // (como EventoFluxoRede), porque atributos em texto não são verificados pelo contrato.
-// Limites (o Core descarta o evento que os violar, sem derrubar a sessão): tipo e chaves de
-// atributos em [a-z0-9._-], até 64 caracteres; até 32 atributos; valores de até 256 bytes.
+// Limites aceitos: tipo e chaves de atributos em [a-z0-9._-], até 64 caracteres; até 32
+// atributos; valores de até 256 bytes. Um evento fora deles pode ser descartado pelo Core, sem
+// derrubar a sessão.
 type EventoGenerico struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Natureza do evento, definida pelo módulo (ex.: "login.falha"). Vazio é inválido.
